@@ -1,0 +1,15 @@
+{
+  "trailingSlash": "auto",
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/assets/*", "*.{png,jpg,jpeg,gif,ico,svg,webp,js,css,xml,txt,json}"]
+  },
+  "routes": [
+    { "route": "/_fuente/*", "statusCode": 404 },
+    { "route": "/.github/*", "statusCode": 404 }
+  ],
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin"
+  }
+}
