@@ -159,6 +159,11 @@ input,textarea{font-family:'Poppins',sans-serif;outline:none;border:none;backgro
 @media(max-width:640px){.dnav{display:none!important}.mnb{display:flex!important}}
 .mapfx{background-attachment:fixed;}
 .wafloat:hover{background:#178A45!important}
+.nbmap .leaflet-tile-pane{filter:invert(100%) hue-rotate(185deg) brightness(.92) contrast(.88) saturate(.55);}
+.nbmap .leaflet-control-attribution{background:rgba(20,30,50,.75);color:#cdd6e6;font-size:10px}
+.nbmap .leaflet-control-attribution a{color:#fff}
+.nbpin{position:absolute;transform:translate(-14px,-50%);display:flex;align-items:center;gap:6px;background:#1FA855;color:#fff;font:700 12px Poppins,sans-serif;padding:5px 11px 5px 6px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.35)}
+.nbpin span{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #0d6b36;display:block}
 @media(max-width:640px){.walbl{display:none}.wafloat{padding:14px!important}footer{padding-bottom:96px!important}}
 @media(max-width:820px){.mapfx{background-attachment:scroll;background-size:cover !important;}}
 `;
@@ -1455,7 +1460,7 @@ function LegalPage(){
 
           <h2 className="b" style={h2}>5. Política de cookies</h2>
           <p style={block}>Este sitio web utiliza únicamente cookies técnicas y de sesión, estrictamente necesarias para su correcto funcionamiento y para la gestión de la navegación. Estas cookies no requieren consentimiento previo conforme al artículo 22.2 de la LSSI-CE.</p>
-          <p style={block}>Para conocer de forma agregada el número de visitas y las páginas más vistas, este sitio utiliza GoatCounter, una herramienta de estadísticas que no instala cookies, no guarda datos que identifiquen al usuario y no hace seguimiento entre sitios web. Este sitio no utiliza cookies de analítica, publicidad ni de terceros con fines de seguimiento. El usuario puede configurar su navegador para bloquear o eliminar las cookies en cualquier momento.</p>
+          <p style={block}>Para conocer de forma agregada el número de visitas y las páginas más vistas, este sitio utiliza GoatCounter, una herramienta de estadísticas que no instala cookies, no guarda datos que identifiquen al usuario y no hace seguimiento entre sitios web. El mapa de ubicación se muestra con OpenStreetMap: al verlo, el navegador descarga las imágenes del mapa desde sus servidores, sin instalar cookies. Este sitio no utiliza cookies de analítica, publicidad ni de terceros con fines de seguimiento. El usuario puede configurar su navegador para bloquear o eliminar las cookies en cualquier momento.</p>
 
           <p style={{...block,marginTop:30,fontSize:12.5,color:C.grayMid}}>Última actualización: noviembre de 2026.</p>
         </div>
@@ -1856,6 +1861,91 @@ function ComoTrabajamos(){
   );
 }
 
+// ---------------------------------------------------------------- Sección "Ven a conocernos" (mapa + datos de contacto)
+const NAVE = { lat:42.7896, lng:-1.6248 }; // Calle B, Pol. Ind. Mutilva Baja (punto aproximado de la calle)
+const DIRECCION = "Pol. Ind. Mutilva Baja, Calle B, Nave 43, 31192 Mutilva (Navarra)";
+const COMO_LLEGAR = "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent("Montajes Eléctricos Nebego, Calle B 43, Polígono Industrial Mutilva Baja, 31192 Mutilva, Navarra");
+// Obras destacadas por localidad (según la sección Proyectos). Actualizar si se añaden proyectos.
+const OBRAS_MAPA = [
+  {n:"Pamplona",lat:42.8157,lng:-1.6522,c:12},
+  {n:"Villava",lat:42.8319,lng:-1.6071,c:1},
+  {n:"Berriozar",lat:42.8357,lng:-1.6746,c:1},
+  {n:"Góngora (Aranguren)",lat:42.7612,lng:-1.5301,c:1},
+  {n:"Zubiri (Esteribar)",lat:42.9306,lng:-1.5043,c:2},
+  {n:"Cadreita",lat:42.2182,lng:-1.693,c:1},
+  {n:"Corella",lat:42.1152,lng:-1.7894,c:1},
+  {n:"Fustiñana",lat:42.0212,lng:-1.4857,c:1},
+];
+
+function MapaVisita(){
+  const ref=useRef(null);
+  useEffect(()=>{
+    const L=window.L; const el=ref.current;
+    if(!L || !el || navigator.webdriver) return; // en la generación de páginas no se carga el mapa
+    if(!document.getElementById("leaflet-css")){ const s=document.createElement("style"); s.id="leaflet-css"; s.textContent=window.LEAFLET_CSS; document.head.appendChild(s); }
+    const map=L.map(el,{scrollWheelZoom:false,dragging:!L.Browser.mobile,tap:false,attributionControl:true});
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
+    map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+    const pts=[];
+    OBRAS_MAPA.forEach(o=>{
+      const m=L.circleMarker([o.lat,o.lng],{radius:7+Math.min(o.c,6),color:"#fff",weight:2,fillColor:"#6E8BFF",fillOpacity:.95}).addTo(map);
+      m.bindTooltip(o.n+" · "+o.c+(o.c===1?" obra":" obras"),{direction:"top",offset:[0,-6]});
+      pts.push([o.lat,o.lng]);
+    });
+    const naveIcon=L.divIcon({className:"",html:'<div class="nbpin"><span></span>Nebego</div>',iconSize:[0,0]});
+    L.marker([NAVE.lat,NAVE.lng],{icon:naveIcon,zIndexOffset:1000}).addTo(map).bindTooltip("Nave y oficinas de Nebego",{direction:"top",offset:[0,-14]});
+    pts.push([NAVE.lat,NAVE.lng]);
+    map.fitBounds(pts,{padding:[30,30]});
+    return ()=>map.remove();
+  },[]);
+  return <div ref={ref} className="nbmap" role="img" aria-label="Mapa con la nave de Nebego en Mutilva y las obras destacadas en Navarra" style={{width:"100%",height:"100%",minHeight:380,borderRadius:8,overflow:"hidden",background:"#1d2b45"}}/>;
+}
+
+function VenAConocernos(){
+  const item={borderTop:"1px solid rgba(255,255,255,.18)",padding:"20px 0 22px"};
+  const lbl={fontSize:12.5,fontWeight:600,color:"rgba(255,255,255,.62)",marginBottom:8};
+  const val={fontSize:"clamp(1.05rem,1.6vw,1.25rem)",fontWeight:800,color:C.white,lineHeight:1.35,marginBottom:10};
+  const lnk={fontSize:14,color:C.white,textDecoration:"underline",textUnderlineOffset:3,fontWeight:500,cursor:"pointer",background:"none",border:"none",padding:0,fontFamily:"inherit"};
+  return (
+    <section id="visitanos" style={{background:"#1C3266",padding:"clamp(4.5rem,8vw,7rem) clamp(1rem,4vw,2.8rem)"}}>
+      <div style={{maxWidth:1120,margin:"0 auto"}}>
+        <V>
+          <h2 className="b" style={{fontSize:"clamp(2.6rem,8vw,6.2rem)",fontWeight:800,color:C.white,textAlign:"center",letterSpacing:"-.035em",lineHeight:1,marginBottom:"clamp(1.2rem,2.5vw,1.8rem)"}}>Ven a conocernos</h2>
+          <p style={{fontSize:"clamp(.98rem,1.4vw,1.08rem)",color:"rgba(255,255,255,.78)",textAlign:"center",lineHeight:1.7,maxWidth:520,margin:"0 auto clamp(2.2rem,4vw,3.2rem)"}}>Nuestra nave y oficinas están en el polígono de Mutilva Baja, junto a Pamplona. Escríbenos por WhatsApp y te atendemos.</p>
+        </V>
+        <V>
+          <div style={{display:"grid",gridTemplateColumns:"1.45fr 1fr",gap:"clamp(1.8rem,3.5vw,2.6rem)",alignItems:"stretch"}} className="dcol">
+            <div style={{minHeight:380}}><MapaVisita/></div>
+            <div>
+              <div style={item}>
+                <div style={lbl}>Nave y oficinas</div>
+                <div style={val}>Calle B, Nave 43<br/>Pol. Ind. Mutilva Baja</div>
+                <a href={COMO_LLEGAR} target="_blank" rel="noopener" style={lnk}>Cómo llegar</a>
+              </div>
+              <div style={item}>
+                <div style={lbl}>Teléfono y WhatsApp</div>
+                <div style={val}>948 236 434 · {WHATSAPP_TXT}</div>
+                <a href="tel:+34948236434" style={{...lnk,marginRight:18}}>Llamar</a>
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener" style={lnk}>Escribir por WhatsApp</a>
+              </div>
+              <div style={{...item,borderBottom:"1px solid rgba(255,255,255,.18)"}}>
+                <div style={lbl}>Obras</div>
+                <div style={val}>Proyectos por toda Navarra</div>
+                <a {...linkProps("proyectos")} style={lnk}>Ver proyectos</a>
+              </div>
+            </div>
+          </div>
+        </V>
+        <div style={{textAlign:"center",marginTop:"clamp(2rem,4vw,2.8rem)"}}>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener" style={{display:"inline-flex",alignItems:"center",gap:10,background:C.white,color:"#1C3266",fontWeight:700,fontSize:15,padding:"15px 30px",borderRadius:4}}>
+            <IcoChat size={20} color="#1C3266"/> Escríbenos por WhatsApp
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function MisionVision(){
   return (
     <section style={{background:C.white,padding:"clamp(4.5rem,8vw,7.5rem) clamp(1rem,4vw,2.8rem)"}}>
@@ -1887,6 +1977,7 @@ function HomePage(){
       <Pilares/>
       <NovedadesPreview/>
       <AvisosNovedades/>
+      <VenAConocernos/>
     </>
   );
 }
@@ -1896,6 +1987,7 @@ function NosotrosPage(){
     <>
       <About/>
       <MisionVision/>
+      <VenAConocernos/>
       <ComoTrabajamos/>
     </>
   );

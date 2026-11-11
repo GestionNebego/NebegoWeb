@@ -25,3 +25,4 @@ Si se añade un artículo nuevo en `ARTICULOS` o una página nueva en `pages`, e
 - Instagram y LinkedIn: constantes `INSTAGRAM_URL` y `LINKEDIN_URL`.
 - Formularios: Web3Forms (presupuesto y avisos de ayudas) y FormSubmit (empleo), a contacto@nebego.com.
 - Analítica: GoatCounter, cuenta `nebego` (constante `GOATCOUNTER` en `build.mjs`). No usa cookies.
+- Mapa "Ven a conocernos" (portada y Nosotros): Leaflet + OpenStreetMap. La ubicación de la nave está en `NAVE` y las obras por localidad en `OBRAS_MAPA` (en `app.jsx`); si se añaden proyectos, actualizar esa lista.

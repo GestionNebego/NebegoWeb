@@ -20,7 +20,7 @@ const GOATCOUNTER = "nebego";                      // nombre de la cuenta: https
 // ---------- 1. Compilar el código (React incluido, sin Babel en el navegador)
 const res = await build({
   entryPoints: [path.join(SRC, "entry.js")], bundle: true, minify: true, format: "iife", target: "es2018",
-  loader: { ".jsx": "jsx" }, jsxFactory: "React.createElement", jsxFragment: "React.Fragment",
+  loader: { ".jsx": "jsx", ".css": "text" }, jsxFactory: "React.createElement", jsxFragment: "React.Fragment",
   define: { "process.env.NODE_ENV": '"production"' }, write: false, logLevel: "warning",
 });
 const js = res.outputFiles[0].contents;
