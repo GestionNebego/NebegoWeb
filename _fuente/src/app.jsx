@@ -1823,8 +1823,7 @@ function RecargaPage(){ return <ServiceDetailPage d={SVC["servicio-recarga"]}/>;
 // Vídeo de la nave (generado con Kling a partir de la foto): se abre la persiana y sale la furgoneta.
 // Kling recortó la foto (arriba y a la izquierda), así que el vídeo se coloca encima de la foto completa,
 // en su sitio exacto, con los bordes fundidos. Se reproduce cuando está en pantalla y se repite.
-// v2 (nov 2026): se añadieron dos furgonetas aparcadas dentro de la nave (montaje sobre el vídeo de Kling).
-// Para cambiarlo: sustituir assets/nave-video-2.mp4 y recalcular VID_POS si el encuadre cambia.
+// Para cambiarlo: sustituir assets/nave-video.mp4 y recalcular VID_POS si el encuadre cambia.
 const VID_POS={left:309/1536, top:329.13/1024, w:1280*0.98359/1536, h:720*0.98359/1024, rot:-0.253};
 function NaveAnimada(){
   const wrap=useRef(null), vid=useRef(null);
@@ -1850,7 +1849,7 @@ function NaveAnimada(){
   return (
     <div ref={wrap} style={{position:"relative",width:"100%",aspectRatio:"1536 / 1024",overflow:"hidden",borderRadius:4,background:"#fff"}}>
       <img src={IMG.cabecera} alt="Nave de Montajes Eléctricos Nebego en Mutilva (Navarra)" style={{position:"absolute",inset:0,width:"100%",height:"100%",display:"block"}}/>
-      <video ref={vid} src="assets/nave-video-2.mp4" muted playsInline preload="auto" aria-hidden="true"
+      <video ref={vid} src="assets/nave-video.mp4" muted playsInline preload="auto" aria-hidden="true"
         style={{position:"absolute",left:f(VID_POS.left),top:f(VID_POS.top),width:f(VID_POS.w),height:f(VID_POS.h),transform:"rotate("+VID_POS.rot+"deg)",transformOrigin:"0 0",
           objectFit:"fill",display:"block",opacity:0,transition:"opacity .6s ease",
           WebkitMaskImage:mask,maskImage:mask,WebkitMaskSize:"100% 100%",maskSize:"100% 100%",WebkitMaskRepeat:"no-repeat",maskRepeat:"no-repeat"}}/>
