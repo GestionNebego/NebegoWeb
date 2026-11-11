@@ -340,11 +340,11 @@ function TrustBar() {
 
 function About() {
   return (
-    <section id="empresa" style={{background:C.white,padding:"clamp(7rem,11vw,9.5rem) clamp(1rem,4vw,2.8rem)"}}>
+    <section id="empresa" style={{background:C.white,padding:"clamp(4.5rem,8vw,7rem) clamp(1rem,4vw,2.8rem)"}}>
       <div style={{maxWidth:1280,margin:"0 auto"}}>
         <V>
           <div style={{textAlign:"center",marginBottom:"clamp(2.8rem,5vw,4.5rem)"}}>
-            <h1 className="b" style={{fontSize:"clamp(2.4rem,5vw,4rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",lineHeight:1.05,marginBottom:18}}>El equipo detrás de cada proyecto</h1>
+            <h2 className="b" style={{fontSize:"clamp(1.9rem,3.6vw,3rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",lineHeight:1.1,marginBottom:18}}>El equipo detrás de cada proyecto</h2>
             <p style={{fontSize:"clamp(1rem,1.5vw,1.18rem)",color:C.grayText,lineHeight:1.7,maxWidth:700,margin:"0 auto"}}>Profesionales comprometidos con la excelencia y tu satisfacción.</p>
           </div>
         </V>
@@ -1574,13 +1574,13 @@ function Pilares(){
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:18}}>
           {areas.map((a,i)=>(
             <V key={i} d={`d${(i%3)+1}`}>
-              <div style={{background:C.white,border:`1px solid ${C.grayLight}`,borderRadius:4,
-                padding:"34px 22px 28px",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",
+              <div style={{background:C.white,border:`1px solid ${C.grayLight}`,borderRadius:4,overflow:"hidden",
+                padding:"0 0 26px",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",textAlign:"center",
                 transition:"transform .25s,box-shadow .25s,border-color .25s"}}
                 onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 10px 30px rgba(27,111,191,.14)";e.currentTarget.style.borderColor=C.blueLight}}
                 onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none";e.currentTarget.style.borderColor=C.grayLight}}>
-                <div style={{marginBottom:18}}>{a.icon}</div>
-                <h3 className="b" style={{fontSize:"1.05rem",fontWeight:700,color:C.grayDark,lineHeight:1.35,marginBottom:22,flex:1,display:"flex",alignItems:"center"}}>{a.t}</h3>
+                <img src={[IMG.instelec,IMG.telecom,IMG.renov,IMG.recarga][i]} alt={a.t} loading="lazy" style={{width:"100%",aspectRatio:"4 / 3",objectFit:"cover",display:"block",marginBottom:20}}/>
+                <h3 className="b" style={{fontSize:"1.05rem",fontWeight:700,color:C.grayDark,lineHeight:1.35,marginBottom:20,padding:"0 18px",flex:1,display:"flex",alignItems:"center"}}>{a.t}</h3>
                 <button onClick={()=>go(["servicio-electricas","servicio-telecom","servicio-renovables","servicio-recarga"][i])}
                   style={{fontSize:12,fontWeight:700,letterSpacing:".04em",background:C.blue,color:C.white,
                     padding:"8px 18px",borderRadius:3,border:"none",cursor:"pointer",fontFamily:"inherit",transition:"background .2s"}}
@@ -1742,6 +1742,42 @@ function TelecomPage(){ return <ServiceDetailPage d={SVC["servicio-telecom"]}/>;
 function RenovablesPage(){ return <ServiceDetailPage d={SVC["servicio-renovables"]}/>; }
 function RecargaPage(){ return <ServiceDetailPage d={SVC["servicio-recarga"]}/>; }
 
+// Vídeo de la nave (generado con Kling a partir de la foto): se abre la persiana y sale la furgoneta.
+// Kling recortó la foto (arriba y a la izquierda), así que el vídeo se coloca encima de la foto completa,
+// en su sitio exacto, con los bordes fundidos. Se reproduce cuando está en pantalla y se repite.
+// Para cambiarlo: sustituir assets/nave-video.mp4 y recalcular VID_POS si el encuadre cambia.
+const VID_POS={left:309/1536, top:329.13/1024, w:1280*0.98359/1536, h:720*0.98359/1024, rot:-0.253};
+function NaveAnimada(){
+  const wrap=useRef(null), vid=useRef(null);
+  useEffect(()=>{
+    const el=wrap.current, v=vid.current; if(!el||!v) return;
+    if(navigator.webdriver) return;
+    if(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let visible=false, timer=0, playing=false;
+    const start=()=>{ v.currentTime=0; const pr=v.play(); if(pr&&pr.catch) pr.catch(()=>{}); playing=true; v.style.opacity="1"; };
+    const onEnd=()=>{ playing=false; timer=setTimeout(()=>{ v.style.opacity="0"; timer=setTimeout(()=>{ if(visible) start(); },3500); },1500); };
+    v.addEventListener("ended",onEnd);
+    const io=new IntersectionObserver(([e])=>{
+      visible=e.isIntersecting;
+      if(visible && !playing){ clearTimeout(timer); timer=setTimeout(start,700); }
+      if(!visible){ clearTimeout(timer); v.pause(); playing=false; v.style.opacity="0"; }
+    },{threshold:.4});
+    io.observe(el);
+    return ()=>{ io.disconnect(); clearTimeout(timer); v.removeEventListener("ended",onEnd); };
+  },[]);
+  const f=(x)=>(x*100)+"%";
+  const mask="linear-gradient(to right,transparent 0,#000 5%),linear-gradient(to bottom,transparent 0,#000 8%)";
+  return (
+    <div ref={wrap} style={{position:"relative",width:"100%",aspectRatio:"1536 / 1024",overflow:"hidden",borderRadius:4,background:"#fff"}}>
+      <img src={IMG.cabecera} alt="Nave de Montajes Eléctricos Nebego en Mutilva (Navarra)" style={{position:"absolute",inset:0,width:"100%",height:"100%",display:"block"}}/>
+      <video ref={vid} src="assets/nave-video.mp4" muted playsInline preload="auto" aria-hidden="true"
+        style={{position:"absolute",left:f(VID_POS.left),top:f(VID_POS.top),width:f(VID_POS.w),height:f(VID_POS.h),transform:"rotate("+VID_POS.rot+"deg)",transformOrigin:"0 0",
+          objectFit:"fill",display:"block",opacity:0,transition:"opacity .6s ease",
+          WebkitMaskImage:mask,maskImage:mask,WebkitMaskComposite:"source-in",maskComposite:"intersect"}}/>
+    </div>
+  );
+}
+
 function Intro(){
   return (
     <section id="empresa" style={{background:C.white,padding:"clamp(5rem,9vw,9rem) clamp(1rem,4vw,2.8rem)"}}>
@@ -1760,8 +1796,7 @@ function Intro(){
           </button>
         </V>
         <V c="revR">
-          <img src={IMG.cabecera} alt="Nave de Montajes Eléctricos Nebego en Mutilva (Navarra)"
-            style={{width:"100%",height:"auto",objectFit:"contain",background:"#fff",borderRadius:4,display:"block"}}/>
+          <NaveAnimada/>
         </V>
       </div>
     </section>
@@ -2083,11 +2118,11 @@ const EQUIPO = [
 
 function Equipo(){
   return (
-    <section id="equipo" style={{background:"#E9EBF0",padding:"clamp(4.5rem,8vw,7rem) clamp(1rem,4vw,2.8rem)"}}>
+    <section id="equipo" style={{background:"#E9EBF0",padding:"clamp(7rem,11vw,9rem) clamp(1rem,4vw,2.8rem) clamp(4.5rem,8vw,7rem)"}}>
       <div style={{maxWidth:1180,margin:"0 auto"}}>
         <V>
           <div style={{textAlign:"center",marginBottom:"clamp(2.2rem,4.5vw,3.4rem)"}}>
-            <h2 className="b" style={{fontSize:"clamp(1.9rem,3.4vw,3rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",marginBottom:14}}>Quiénes somos</h2>
+            <h1 className="b" style={{fontSize:"clamp(2.4rem,5vw,4rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",lineHeight:1.05,marginBottom:14}}>Quiénes somos</h1>
             <p style={{fontSize:"clamp(1rem,1.5vw,1.12rem)",color:C.grayText,lineHeight:1.7,maxWidth:620,margin:"0 auto"}}>Una empresa familiar: las personas que están detrás de Nebego.</p>
           </div>
         </V>
@@ -2163,9 +2198,9 @@ function HomePage(){
 function NosotrosPage(){
   return (
     <>
-      <About/>
-      <MisionVision/>
       <Equipo/>
+      <MisionVision/>
+      <About/>
       <VenAConocernos/>
       <ComoTrabajamos/>
     </>
