@@ -156,15 +156,29 @@ a{text-decoration:none;color:inherit;}
 input,textarea{font-family:'Poppins',sans-serif;outline:none;border:none;background:transparent;}
 @keyframes fup{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @media(max-width:820px){.dcol{grid-template-columns:1fr!important}.flip{direction:ltr!important}}
-@media(max-width:640px){.dnav{display:none!important}.mnb{display:flex!important}}
+@media(max-width:1020px){.dnav{display:none!important}.mnb{display:flex!important}}
+.dnav button,.dnav a{white-space:nowrap}
 .mapfx{background-attachment:fixed;}
-.wafloat:hover{background:#178A45!important}
+.bcbar{position:fixed;right:clamp(10px,1.4vw,20px);top:50%;transform:translateY(-50%);z-index:150;display:flex;flex-direction:column;border-radius:10px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.28);background:#1C3266}
+.bcitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:78px;height:68px;color:#fff;font-size:10.5px;font-weight:700;letter-spacing:.01em;border-top:1px solid rgba(255,255,255,.12);transition:background .2s}
+.bcitem:first-child{border-top:none}
+.bcitem:hover{background:#25407D}
+.bcitem.bc-wa{background:#1FA855}.bcitem.bc-wa:hover{background:#178A45}
 .nbmap .leaflet-tile-pane{filter:invert(100%) hue-rotate(185deg) brightness(.92) contrast(.88) saturate(.55);}
 .nbmap .leaflet-control-attribution{background:rgba(20,30,50,.75);color:#cdd6e6;font-size:10px}
 .nbmap .leaflet-control-attribution a{color:#fff}
+.nbmap path.leaflet-interactive{cursor:pointer}
+@media(min-width:901px){.blogfaq{position:sticky;top:110px;max-height:calc(100vh - 130px);overflow-y:auto;padding-right:6px}}@media(max-width:900px){.blog2col{grid-template-columns:1fr!important}}
+@media(max-width:900px){.eqgrid{grid-template-columns:1fr 1fr!important}}@media(max-width:600px){.eqgrid{grid-template-columns:1fr!important}}
+.nbtip small{display:block;font-size:11px;color:#5b6575;font-weight:600}.nbtip b{display:block;font-size:13px;color:#1A2332;max-width:240px;white-space:normal}.nbtip em{display:block;font-style:normal;font-size:11.5px;color:#1B6FBF;font-weight:700;margin-top:2px}
+.nbviews{display:flex;background:rgba(20,30,50,.85);border-radius:6px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.nbviews button{background:none;border:none;color:#cdd6e6;font:600 12px Poppins,sans-serif;padding:8px 11px;cursor:pointer}
+.nbviews button.on{background:#1B6FBF;color:#fff}
 .nbpin{position:absolute;transform:translate(-14px,-50%);display:flex;align-items:center;gap:6px;background:#1FA855;color:#fff;font:700 12px Poppins,sans-serif;padding:5px 11px 5px 6px;border-radius:999px;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,.35)}
 .nbpin span{width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #0d6b36;display:block}
-@media(max-width:640px){.walbl{display:none}.wafloat{padding:14px!important}footer{padding-bottom:96px!important}}
+@media(max-width:640px){.bcbar{top:auto;bottom:0;left:0;right:0;transform:none;flex-direction:row;border-radius:0;box-shadow:0 -4px 16px rgba(0,0,0,.18)}
+.bcitem{flex:1;width:auto;height:58px;border-top:none;border-left:1px solid rgba(255,255,255,.12)}.bcitem:first-child{border-left:none}
+footer{padding-bottom:90px!important}}
 @media(max-width:820px){.mapfx{background-attachment:scroll;background-size:cover !important;}}
 `;
 
@@ -197,14 +211,32 @@ function IcoExt({size=12,color="currentColor"}){
   return <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M4.5 2H2v8h8V7.5M7 2h3v3M10 2 5.5 6.5" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 }
 
-// Botón flotante de WhatsApp (abajo a la derecha, en todas las páginas)
-function WhatsAppFloat(){
+// Barra flotante de contacto: a la derecha en ordenador, abajo en el móvil.
+// Iconos genéricos (sin logotipos de marca).
+function IcoPhone({size=20,color="#fff"}){
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 3.5h3.6l1.7 4.4-2.2 1.5a12 12 0 0 0 6.5 6.5l1.5-2.2 4.4 1.7V19a2 2 0 0 1-2 2C10.3 21 3 13.7 3 5.5a2 2 0 0 1 2-2z" stroke={color} strokeWidth="1.8" strokeLinejoin="round"/></svg>;
+}
+function IcoPhoto({size=20,color="#fff"}){
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="4.5" width="18" height="15" rx="2.5" stroke={color} strokeWidth="1.8"/><circle cx="8.5" cy="9.5" r="1.7" fill={color}/><path d="M4 17.5l5-4.5 3.5 3 3-2.5 4.5 4" stroke={color} strokeWidth="1.8" strokeLinejoin="round"/></svg>;
+}
+function IcoWork({size=20,color="#fff"}){
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2" stroke={color} strokeWidth="1.8"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18" stroke={color} strokeWidth="1.8"/></svg>;
+}
+function BarraContacto(){
+  const items=[
+    {t:"WhatsApp",href:WHATSAPP_URL,ext:true,ico:<IcoChat size={21}/>,cls:"bc-wa"},
+    {t:"Llamar",href:"tel:+34948236434",ico:<IcoPhone/>},
+    {t:"Instagram",href:INSTAGRAM_URL,ext:true,ico:<IcoPhoto/>},
+    {t:"LinkedIn",href:LINKEDIN_URL,ext:true,ico:<IcoWork/>},
+  ];
   return (
-    <a href={WHATSAPP_URL} target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp" className="wafloat"
-      style={{position:"fixed",right:"clamp(14px,2.4vw,26px)",bottom:"clamp(14px,2.4vw,26px)",zIndex:150,display:"flex",alignItems:"center",gap:10,
-        background:"#1FA855",color:"#fff",borderRadius:999,padding:"13px 18px 13px 15px",boxShadow:"0 8px 24px rgba(0,0,0,.22)",fontWeight:700,fontSize:14,letterSpacing:".02em"}}>
-      <IcoChat/><span className="walbl">WhatsApp</span>
-    </a>
+    <nav className="bcbar" aria-label="Contacto rápido">
+      {items.map(it=>(
+        <a key={it.t} href={it.href} className={"bcitem "+(it.cls||"")} aria-label={it.t} {...(it.ext?{target:"_blank",rel:"noopener"}:{})}>
+          {it.ico}<span>{it.t}</span>
+        </a>
+      ))}
+    </nav>
   );
 }
 
@@ -633,130 +665,139 @@ function ProjectModal({project, onClose}) {
   );
 }
 
+const PROYECTOS = [
+  {
+    img:imgObPalacio, label:"Palacio de Navarra", tag:"Edificio público",
+    meta:[{label:"Tipo",value:"Edificio institucional / histórico"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Participación en la segunda fase de trabajos eléctricos del Palacio de Navarra, uno de los edificios institucionales más representativos de la Comunidad Foral. La actuación requirió una ejecución técnica cuidada, coordinación en obra y especial atención a la integración de las instalaciones en un edificio de alto valor representativo.",
+  },
+  {
+    img:imgObSeminario, label:"Casa Seminario — Ayuntamiento de Pamplona", tag:"Edificio público",
+    meta:[{label:"Tipo",value:"Edificio municipal / administrativo"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos en edificio vinculado al Ayuntamiento de Pamplona. La intervención se desarrolló con criterios de seguridad, orden y adaptación a las necesidades de un edificio público de uso administrativo o institucional.",
+  },
+  {
+    img:imgObEstadio, label:"Estadio Larrabide", tag:"Deportivo",
+    meta:[{label:"Tipo",value:"Instalación deportiva"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y canalizaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos en instalación deportiva de referencia en Pamplona. La intervención incluyó soluciones de distribución eléctrica e iluminación, adaptadas a las necesidades de un espacio deportivo con uso intensivo y público.",
+  },
+  {
+    img:imgObMuseo, label:"Museo de Arte Contemporáneo — Universidad de Navarra", tag:"Iluminación",
+    meta:[{label:"Tipo",value:"Museo / edificio cultural"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y telecomunicaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Participación en trabajos eléctricos en un edificio cultural de referencia en Navarra. La instalación requería especial atención a la iluminación, la integración técnica y la fiabilidad de los sistemas en un espacio destinado a exposiciones y actividad cultural.",
+  },
+  {
+    img:imgObAulario, label:"Aulario UPNA", tag:"Baja tensión",
+    meta:[{label:"Tipo",value:"Edificio universitario / docente"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y telecomunicaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Participación en trabajos de instalación eléctrica en edificio docente de la Universidad Pública de Navarra. La actuación incluyó soluciones orientadas al funcionamiento de aulas, zonas comunes y espacios técnicos, garantizando una instalación ordenada y adaptada al uso universitario.",
+  },
+  {
+    img:imgObDistricalor, label:"Nave Districalor Txantrea", tag:"Industrial",
+    meta:[{label:"Tipo",value:"Nave industrial / instalación energética"},{label:"Especialidad",value:"Baja tensión, fuerza, cuadros eléctricos y canalizaciones industriales"},{label:"Ubicación",value:"Txantrea, Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos en nave vinculada a actividad energética o industrial. La instalación requirió una ejecución técnica orientada a la distribución de potencia, cuadros eléctricos y canalizaciones, con especial atención a la seguridad y continuidad de servicio.",
+  },
+  {
+    img:imgPortada, label:"Poema del Mar Aquarium", tag:"Baja tensión",
+    meta:[{label:"Tipo",value:"Acuario / edificio turístico"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y canalizaciones"},{label:"Ubicación",value:"Las Palmas de Gran Canaria"}],
+    desc:"Trabajos de instalación eléctrica en un edificio turístico y técnico de gran singularidad. La intervención se desarrolló en un entorno con altos requisitos de seguridad, coordinación y fiabilidad de las instalaciones.",
+  },
+  {
+    img:imgObVW, label:"Volkswagen N1C", tag:"Industrial",
+    meta:[{label:"Tipo",value:"Instalación industrial / automoción"},{label:"Especialidad",value:"Baja tensión, fuerza, alimentación de climatización y cuadros eléctricos"},{label:"Ubicación",value:"Navarra"}],
+    desc:"Trabajos eléctricos asociados a instalación de climatización en entorno industrial vinculado a Volkswagen N1C. La intervención requirió alimentación eléctrica, canalizaciones y coordinación técnica para dar servicio a equipos de climatización en un entorno de alta exigencia.",
+  },
+  {
+    img:imgObAmigos, label:"Edificio Amigos — Universidad de Navarra", tag:"Baja tensión",
+    meta:[{label:"Tipo",value:"Edificio universitario / docente"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Participación en instalaciones eléctricas del Edificio Amigos, destinado a Económicas y másteres de la Universidad de Navarra. Los trabajos estuvieron orientados a dotar al edificio de una instalación segura, ordenada y adaptada a espacios docentes y administrativos.",
+  },
+  {
+    img:imgObMuga, label:"Hotel Muga de Beloso", tag:"Hotel",
+    meta:[{label:"Tipo",value:"Hotel / edificio terciario"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos en edificio hotelero, donde la calidad de ejecución, la integración de las instalaciones y el cuidado del acabado son especialmente importantes. La actuación permitió adaptar la instalación eléctrica a las necesidades de un espacio de alta exigencia y uso continuado.",
+  },
+  {
+    img:imgObQuirofano, label:"Quirófano Híbrido — Hospital de Navarra", tag:"Sanitario",
+    meta:[{label:"Tipo",value:"Instalación hospitalaria / quirófano"},{label:"Especialidad",value:"Baja tensión, alimentación técnica, seguridad eléctrica, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos en quirófano híbrido del Hospital de Navarra, un entorno sanitario de alta exigencia técnica. La actuación requirió una instalación segura, fiable y cuidadosamente coordinada para dar servicio a equipamiento médico especializado y garantizar la continuidad de funcionamiento del espacio quirúrgico.",
+  },
+  {
+    img:imgObBardenas, label:"Centro de Interpretación de las Bardenas Reales", tag:"Edificio público",
+    meta:[{label:"Tipo",value:"Centro interpretativo / edificio cultural"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y canalizaciones"},{label:"Ubicación",value:"Fustiñana, Navarra"}],
+    desc:"Participación en trabajos eléctricos en centro de interpretación vinculado al entorno de las Bardenas Reales. La actuación combinó instalación eléctrica, iluminación y sistemas auxiliares para un edificio destinado a visitantes, divulgación y uso público.",
+  },
+  {
+    img:imgObPasarela, label:"Pasarela Aranzadi", tag:"Iluminación",
+    meta:[{label:"Tipo",value:"Infraestructura urbana"},{label:"Especialidad",value:"Baja tensión, iluminación exterior y canalizaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos vinculados a una infraestructura urbana situada en el entorno de Aranzadi. La intervención se centró en la instalación eléctrica y la iluminación, contribuyendo a la funcionalidad y seguridad del espacio público.",
+  },
+  {
+    img:imgObBunker, label:"Búnker Radiología — Hospital de Navarra", tag:"Sanitario",
+    meta:[{label:"Tipo",value:"Instalación hospitalaria / radiología"},{label:"Especialidad",value:"Baja tensión, alimentación técnica, seguridad eléctrica y canalizaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos en zona técnica de radiología del Hospital de Navarra. La intervención requirió una ejecución especialmente cuidada por tratarse de un entorno hospitalario con altas exigencias de seguridad, precisión técnica y fiabilidad de la instalación.",
+  },
+  {
+    img:imgObCorella, label:"Casa de Cultura de Corella", tag:"Baja tensión",
+    meta:[{label:"Tipo",value:"Edificio cultural / público"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y cuadros eléctricos"},{label:"Ubicación",value:"Corella, Navarra"}],
+    desc:"Trabajos de instalación eléctrica en edificio cultural de uso público. La actuación incluyó soluciones orientadas a la seguridad, la funcionalidad y la correcta distribución eléctrica en un espacio destinado a actividades culturales y ciudadanas.",
+  },
+  {
+    img:imgObLaser, label:"Metálicas Láser Ebro", tag:"Industrial",
+    meta:[{label:"Tipo",value:"Nave industrial / empresa metalúrgica"},{label:"Especialidad",value:"Baja tensión, fuerza, iluminación industrial y cuadros eléctricos"},{label:"Ubicación",value:"Navarra / Ribera del Ebro"}],
+    desc:"Instalación eléctrica en entorno industrial, adaptada a las necesidades de una empresa vinculada al sector metálico. La actuación incluyó soluciones de fuerza, distribución eléctrica e iluminación industrial, priorizando la fiabilidad y la seguridad de la instalación.",
+  },
+  {
+    img:imgObHacienda, label:"Oficinas Hacienda — Calle Esquíroz", tag:"Oficinas",
+    meta:[{label:"Tipo",value:"Edificio administrativo / oficinas"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
+    desc:"Trabajos eléctricos en oficinas administrativas, orientados a garantizar una instalación funcional, segura y adaptada al uso diario de puestos de trabajo, zonas comunes y espacios técnicos. La intervención incluyó distribución eléctrica, iluminación y sistemas asociados.",
+  },
+  {
+    img:imgObMarisol, label:"Chill Out Restaurante Marisol", tag:"Iluminación",
+    meta:[{label:"Tipo",value:"Hostelería / restaurante"},{label:"Especialidad",value:"Baja tensión, iluminación decorativa y canalizaciones"},{label:"Ubicación",value:"Cadreita, Navarra"}],
+    desc:"Instalación eléctrica en zona chill out de establecimiento hostelero, cuidando especialmente la iluminación ambiental y la integración de las instalaciones en el diseño del espacio. El objetivo fue crear una solución funcional, segura y visualmente cuidada.",
+  },
+  {
+    img:imgObLoro, label:"Animal Embassy — Loro Parque", tag:"Baja tensión",
+    meta:[{label:"Tipo",value:"Parque zoológico / edificio divulgativo"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y telecomunicaciones"},{label:"Ubicación",value:"Puerto de la Cruz, Tenerife"}],
+    desc:"Participación en los trabajos de instalación eléctrica del espacio Animal Embassy en Loro Parque. La actuación requirió una ejecución cuidada, adaptada a un entorno singular y con necesidades técnicas específicas para espacios de uso público y divulgativo.",
+  },
+  {
+    img:imgObCentroDia, label:"Centro de Día de Zubiri", tag:"Sanitario",
+    meta:[{label:"Tipo",value:"Centro asistencial / edificio público"},{label:"Especialidad",value:"Baja tensión, iluminación, seguridad eléctrica y telecomunicaciones"},{label:"Ubicación",value:"Zubiri, Navarra"}],
+    desc:"Instalación eléctrica en centro asistencial, donde la seguridad, la fiabilidad y el confort de los usuarios son aspectos fundamentales. La actuación incluyó distribución eléctrica, iluminación y sistemas auxiliares adaptados al uso diario del centro.",
+  },
+  {
+    img:imgObEsteribar, label:"Ayuntamiento de Esteribar", tag:"Edificio público",
+    meta:[{label:"Tipo",value:"Edificio municipal / administrativo"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y canalizaciones"},{label:"Ubicación",value:"Esteribar, Navarra"}],
+    desc:"Participación en trabajos eléctricos para edificio municipal del Ayuntamiento de Esteribar. La intervención incluyó instalaciones de baja tensión y soluciones adaptadas al funcionamiento diario de un edificio público.",
+  },
+  {
+    img:imgObBerriozar, label:"Centro de Salud de Berriozar", tag:"Sanitario",
+    meta:[{label:"Tipo",value:"Centro sanitario"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y seguridad eléctrica"},{label:"Ubicación",value:"Berriozar, Navarra"}],
+    desc:"Trabajos eléctricos en centro sanitario, con especial atención a la seguridad, continuidad de servicio y cumplimiento de las exigencias propias de este tipo de instalaciones. La actuación incluyó distribución eléctrica, protecciones, iluminación y sistemas asociados.",
+  },
+  {
+    img:imgObVillava, label:"Piscinas Municipales de Villava", tag:"Deportivo",
+    meta:[{label:"Tipo",value:"Instalación deportiva / pública"},{label:"Especialidad",value:"Baja tensión, iluminación, seguridad eléctrica y canalizaciones"},{label:"Ubicación",value:"Villava, Navarra"}],
+    desc:"Instalación eléctrica en equipamiento deportivo municipal, con especial atención a la seguridad de las instalaciones y al correcto funcionamiento de zonas de uso público. La actuación incluyó trabajos de distribución eléctrica, protecciones, iluminación y sistemas auxiliares.",
+  },
+  {
+    img:imgObGongora, label:"Palacio Viejo de Góngora", tag:"Edificio singular",
+    meta:[{label:"Tipo",value:"Edificio histórico / institucional"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones e integración técnica"},{label:"Ubicación",value:"Góngora, Navarra"}],
+    desc:"Participación en trabajos eléctricos en edificio singular de carácter histórico. La intervención requirió una ejecución cuidada, respetando las características del inmueble y adaptando las instalaciones a las necesidades actuales de uso.",
+  },
+];
+
 function Projects({limit,map}={}) {
   const [selected, setSelected] = useState(null);
-  const p = [
-    {
-      img:imgObPalacio, label:"Palacio de Navarra", tag:"Edificio público",
-      meta:[{label:"Tipo",value:"Edificio institucional / histórico"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Participación en la segunda fase de trabajos eléctricos del Palacio de Navarra, uno de los edificios institucionales más representativos de la Comunidad Foral. La actuación requirió una ejecución técnica cuidada, coordinación en obra y especial atención a la integración de las instalaciones en un edificio de alto valor representativo.",
-    },
-    {
-      img:imgObSeminario, label:"Casa Seminario — Ayuntamiento de Pamplona", tag:"Edificio público",
-      meta:[{label:"Tipo",value:"Edificio municipal / administrativo"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos en edificio vinculado al Ayuntamiento de Pamplona. La intervención se desarrolló con criterios de seguridad, orden y adaptación a las necesidades de un edificio público de uso administrativo o institucional.",
-    },
-    {
-      img:imgObEstadio, label:"Estadio Larrabide", tag:"Deportivo",
-      meta:[{label:"Tipo",value:"Instalación deportiva"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y canalizaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos en instalación deportiva de referencia en Pamplona. La intervención incluyó soluciones de distribución eléctrica e iluminación, adaptadas a las necesidades de un espacio deportivo con uso intensivo y público.",
-    },
-    {
-      img:imgObMuseo, label:"Museo de Arte Contemporáneo — Universidad de Navarra", tag:"Iluminación",
-      meta:[{label:"Tipo",value:"Museo / edificio cultural"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y telecomunicaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Participación en trabajos eléctricos en un edificio cultural de referencia en Navarra. La instalación requería especial atención a la iluminación, la integración técnica y la fiabilidad de los sistemas en un espacio destinado a exposiciones y actividad cultural.",
-    },
-    {
-      img:imgObAulario, label:"Aulario UPNA", tag:"Baja tensión",
-      meta:[{label:"Tipo",value:"Edificio universitario / docente"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y telecomunicaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Participación en trabajos de instalación eléctrica en edificio docente de la Universidad Pública de Navarra. La actuación incluyó soluciones orientadas al funcionamiento de aulas, zonas comunes y espacios técnicos, garantizando una instalación ordenada y adaptada al uso universitario.",
-    },
-    {
-      img:imgObDistricalor, label:"Nave Districalor Txantrea", tag:"Industrial",
-      meta:[{label:"Tipo",value:"Nave industrial / instalación energética"},{label:"Especialidad",value:"Baja tensión, fuerza, cuadros eléctricos y canalizaciones industriales"},{label:"Ubicación",value:"Txantrea, Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos en nave vinculada a actividad energética o industrial. La instalación requirió una ejecución técnica orientada a la distribución de potencia, cuadros eléctricos y canalizaciones, con especial atención a la seguridad y continuidad de servicio.",
-    },
-    {
-      img:imgPortada, label:"Poema del Mar Aquarium", tag:"Baja tensión",
-      meta:[{label:"Tipo",value:"Acuario / edificio turístico"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y canalizaciones"},{label:"Ubicación",value:"Las Palmas de Gran Canaria"}],
-      desc:"Trabajos de instalación eléctrica en un edificio turístico y técnico de gran singularidad. La intervención se desarrolló en un entorno con altos requisitos de seguridad, coordinación y fiabilidad de las instalaciones.",
-    },
-    {
-      img:imgObVW, label:"Volkswagen N1C", tag:"Industrial",
-      meta:[{label:"Tipo",value:"Instalación industrial / automoción"},{label:"Especialidad",value:"Baja tensión, fuerza, alimentación de climatización y cuadros eléctricos"},{label:"Ubicación",value:"Navarra"}],
-      desc:"Trabajos eléctricos asociados a instalación de climatización en entorno industrial vinculado a Volkswagen N1C. La intervención requirió alimentación eléctrica, canalizaciones y coordinación técnica para dar servicio a equipos de climatización en un entorno de alta exigencia.",
-    },
-    {
-      img:imgObAmigos, label:"Edificio Amigos — Universidad de Navarra", tag:"Baja tensión",
-      meta:[{label:"Tipo",value:"Edificio universitario / docente"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Participación en instalaciones eléctricas del Edificio Amigos, destinado a Económicas y másteres de la Universidad de Navarra. Los trabajos estuvieron orientados a dotar al edificio de una instalación segura, ordenada y adaptada a espacios docentes y administrativos.",
-    },
-    {
-      img:imgObMuga, label:"Hotel Muga de Beloso", tag:"Hotel",
-      meta:[{label:"Tipo",value:"Hotel / edificio terciario"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos en edificio hotelero, donde la calidad de ejecución, la integración de las instalaciones y el cuidado del acabado son especialmente importantes. La actuación permitió adaptar la instalación eléctrica a las necesidades de un espacio de alta exigencia y uso continuado.",
-    },
-    {
-      img:imgObQuirofano, label:"Quirófano Híbrido — Hospital de Navarra", tag:"Sanitario",
-      meta:[{label:"Tipo",value:"Instalación hospitalaria / quirófano"},{label:"Especialidad",value:"Baja tensión, alimentación técnica, seguridad eléctrica, canalizaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos en quirófano híbrido del Hospital de Navarra, un entorno sanitario de alta exigencia técnica. La actuación requirió una instalación segura, fiable y cuidadosamente coordinada para dar servicio a equipamiento médico especializado y garantizar la continuidad de funcionamiento del espacio quirúrgico.",
-    },
-    {
-      img:imgObBardenas, label:"Centro de Interpretación de las Bardenas Reales", tag:"Edificio público",
-      meta:[{label:"Tipo",value:"Centro interpretativo / edificio cultural"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y canalizaciones"},{label:"Ubicación",value:"Fustiñana, Navarra"}],
-      desc:"Participación en trabajos eléctricos en centro de interpretación vinculado al entorno de las Bardenas Reales. La actuación combinó instalación eléctrica, iluminación y sistemas auxiliares para un edificio destinado a visitantes, divulgación y uso público.",
-    },
-    {
-      img:imgObPasarela, label:"Pasarela Aranzadi", tag:"Iluminación",
-      meta:[{label:"Tipo",value:"Infraestructura urbana"},{label:"Especialidad",value:"Baja tensión, iluminación exterior y canalizaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos vinculados a una infraestructura urbana situada en el entorno de Aranzadi. La intervención se centró en la instalación eléctrica y la iluminación, contribuyendo a la funcionalidad y seguridad del espacio público.",
-    },
-    {
-      img:imgObBunker, label:"Búnker Radiología — Hospital de Navarra", tag:"Sanitario",
-      meta:[{label:"Tipo",value:"Instalación hospitalaria / radiología"},{label:"Especialidad",value:"Baja tensión, alimentación técnica, seguridad eléctrica y canalizaciones"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos en zona técnica de radiología del Hospital de Navarra. La intervención requirió una ejecución especialmente cuidada por tratarse de un entorno hospitalario con altas exigencias de seguridad, precisión técnica y fiabilidad de la instalación.",
-    },
-    {
-      img:imgObCorella, label:"Casa de Cultura de Corella", tag:"Baja tensión",
-      meta:[{label:"Tipo",value:"Edificio cultural / público"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y cuadros eléctricos"},{label:"Ubicación",value:"Corella, Navarra"}],
-      desc:"Trabajos de instalación eléctrica en edificio cultural de uso público. La actuación incluyó soluciones orientadas a la seguridad, la funcionalidad y la correcta distribución eléctrica en un espacio destinado a actividades culturales y ciudadanas.",
-    },
-    {
-      img:imgObLaser, label:"Metálicas Láser Ebro", tag:"Industrial",
-      meta:[{label:"Tipo",value:"Nave industrial / empresa metalúrgica"},{label:"Especialidad",value:"Baja tensión, fuerza, iluminación industrial y cuadros eléctricos"},{label:"Ubicación",value:"Navarra / Ribera del Ebro"}],
-      desc:"Instalación eléctrica en entorno industrial, adaptada a las necesidades de una empresa vinculada al sector metálico. La actuación incluyó soluciones de fuerza, distribución eléctrica e iluminación industrial, priorizando la fiabilidad y la seguridad de la instalación.",
-    },
-    {
-      img:imgObHacienda, label:"Oficinas Hacienda — Calle Esquíroz", tag:"Oficinas",
-      meta:[{label:"Tipo",value:"Edificio administrativo / oficinas"},{label:"Especialidad",value:"Baja tensión, iluminación, telecomunicaciones y cuadros eléctricos"},{label:"Ubicación",value:"Pamplona, Navarra"}],
-      desc:"Trabajos eléctricos en oficinas administrativas, orientados a garantizar una instalación funcional, segura y adaptada al uso diario de puestos de trabajo, zonas comunes y espacios técnicos. La intervención incluyó distribución eléctrica, iluminación y sistemas asociados.",
-    },
-    {
-      img:imgObMarisol, label:"Chill Out Restaurante Marisol", tag:"Iluminación",
-      meta:[{label:"Tipo",value:"Hostelería / restaurante"},{label:"Especialidad",value:"Baja tensión, iluminación decorativa y canalizaciones"},{label:"Ubicación",value:"Cadreita, Navarra"}],
-      desc:"Instalación eléctrica en zona chill out de establecimiento hostelero, cuidando especialmente la iluminación ambiental y la integración de las instalaciones en el diseño del espacio. El objetivo fue crear una solución funcional, segura y visualmente cuidada.",
-    },
-    {
-      img:imgObLoro, label:"Animal Embassy — Loro Parque", tag:"Baja tensión",
-      meta:[{label:"Tipo",value:"Parque zoológico / edificio divulgativo"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones y telecomunicaciones"},{label:"Ubicación",value:"Puerto de la Cruz, Tenerife"}],
-      desc:"Participación en los trabajos de instalación eléctrica del espacio Animal Embassy en Loro Parque. La actuación requirió una ejecución cuidada, adaptada a un entorno singular y con necesidades técnicas específicas para espacios de uso público y divulgativo.",
-    },
-    {
-      img:imgObCentroDia, label:"Centro de Día de Zubiri", tag:"Sanitario",
-      meta:[{label:"Tipo",value:"Centro asistencial / edificio público"},{label:"Especialidad",value:"Baja tensión, iluminación, seguridad eléctrica y telecomunicaciones"},{label:"Ubicación",value:"Zubiri, Navarra"}],
-      desc:"Instalación eléctrica en centro asistencial, donde la seguridad, la fiabilidad y el confort de los usuarios son aspectos fundamentales. La actuación incluyó distribución eléctrica, iluminación y sistemas auxiliares adaptados al uso diario del centro.",
-    },
-    {
-      img:imgObEsteribar, label:"Ayuntamiento de Esteribar", tag:"Edificio público",
-      meta:[{label:"Tipo",value:"Edificio municipal / administrativo"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y canalizaciones"},{label:"Ubicación",value:"Esteribar, Navarra"}],
-      desc:"Participación en trabajos eléctricos para edificio municipal del Ayuntamiento de Esteribar. La intervención incluyó instalaciones de baja tensión y soluciones adaptadas al funcionamiento diario de un edificio público.",
-    },
-    {
-      img:imgObBerriozar, label:"Centro de Salud de Berriozar", tag:"Sanitario",
-      meta:[{label:"Tipo",value:"Centro sanitario"},{label:"Especialidad",value:"Baja tensión, iluminación, cuadros eléctricos y seguridad eléctrica"},{label:"Ubicación",value:"Berriozar, Navarra"}],
-      desc:"Trabajos eléctricos en centro sanitario, con especial atención a la seguridad, continuidad de servicio y cumplimiento de las exigencias propias de este tipo de instalaciones. La actuación incluyó distribución eléctrica, protecciones, iluminación y sistemas asociados.",
-    },
-    {
-      img:imgObVillava, label:"Piscinas Municipales de Villava", tag:"Deportivo",
-      meta:[{label:"Tipo",value:"Instalación deportiva / pública"},{label:"Especialidad",value:"Baja tensión, iluminación, seguridad eléctrica y canalizaciones"},{label:"Ubicación",value:"Villava, Navarra"}],
-      desc:"Instalación eléctrica en equipamiento deportivo municipal, con especial atención a la seguridad de las instalaciones y al correcto funcionamiento de zonas de uso público. La actuación incluyó trabajos de distribución eléctrica, protecciones, iluminación y sistemas auxiliares.",
-    },
-    {
-      img:imgObGongora, label:"Palacio Viejo de Góngora", tag:"Edificio singular",
-      meta:[{label:"Tipo",value:"Edificio histórico / institucional"},{label:"Especialidad",value:"Baja tensión, iluminación, canalizaciones e integración técnica"},{label:"Ubicación",value:"Góngora, Navarra"}],
-      desc:"Participación en trabajos eléctricos en edificio singular de carácter histórico. La intervención requirió una ejecución cuidada, respetando las características del inmueble y adaptando las instalaciones a las necesidades actuales de uso.",
-    },
-  ];
+  const p = PROYECTOS;
+  // Si se llega desde el mapa ("Ven a conocernos"), abrir directamente esa obra
+  useEffect(()=>{
+    const t=window.__abrirObra; if(!t) return;
+    window.__abrirObra=null;
+    const k=p.findIndex(x=>x.label===t);
+    if(k>=0) setSelected(k);
+  },[]);
   return (
     <>
       {selected !== null && (
@@ -843,7 +884,7 @@ function CtaBanner() {
                   fontWeight:700,fontSize:14,letterSpacing:".06em",textTransform:"uppercase",
                   padding:"15px 32px",borderRadius:3,whiteSpace:"nowrap",transition:"background .2s",border:"none",cursor:"pointer",fontFamily:"inherit"}}
                 onMouseEnter={e=>e.currentTarget.style.background="#2E7FD1"}
-                onMouseLeave={e=>e.currentTarget.style.background=C.accent}>Solicitar presupuesto</button>
+                onMouseLeave={e=>e.currentTarget.style.background=C.accent}>Háblanos de tu proyecto</button>
               <div style={{display:"flex",alignItems:"center",gap:7}}>
                 <div style={{width:7,height:7,borderRadius:"50%",background:"#5CDBA0"}}/>
                 <span style={{fontSize:13,color:"rgba(255,255,255,.65)"}}>Respuesta en 24–48 h hábiles</span>
@@ -939,7 +980,7 @@ function Contact() {
               </div>
             ) : (
               <div style={{background:C.white,borderRadius:4,padding:"clamp(1.6rem,3vw,2.5rem)",boxShadow:"0 4px 22px rgba(0,0,0,.08)"}}>
-                <div className="b" style={{fontSize:16,fontWeight:800,color:C.ink,marginBottom:24}}>Solicitar presupuesto</div>
+                <div className="b" style={{fontSize:16,fontWeight:800,color:C.ink,marginBottom:24}}>Háblanos de tu proyecto</div>
                 {[{n:"nombre",p:"Nombre y apellidos",t:"text"},{n:"empresa",p:"Empresa",t:"text"},{n:"email",p:"Correo electrónico",t:"email"},{n:"telefono",p:"Teléfono",t:"tel"}].map(f=>(
                   <div key={f.n} style={{marginBottom:18}}>
                     <input name={f.n} type={f.t} placeholder={f.p} value={form[f.n]} onChange={h}
@@ -990,7 +1031,7 @@ function Nav({route,light}){
     window.addEventListener("scroll",fn);
     return ()=>window.removeEventListener("scroll",fn);
   },[]);
-  const links=[["Inicio","inicio"],["Nosotros","nosotros"],["Proyectos","proyectos"],["Servicios","servicios"],["Blog","blog"],["Empleo","empleo"],["FAQs","faqs"]];
+  const links=[["Inicio","inicio"],["Nosotros","nosotros"],["Proyectos","proyectos"],["Servicios","servicios"],["Blog","blog"],["Empleo","empleo"]];
   const solid = sc || light;
   const tc = solid ? C.grayDark : "rgba(255,255,255,.9)";
   const nav=(p)=>{ go(p); setOp(false); };
@@ -1019,7 +1060,7 @@ function Nav({route,light}){
             style={{fontSize:13,fontWeight:700,letterSpacing:".05em",textTransform:"uppercase",
               background:C.blue,color:C.white,padding:"9px 20px",borderRadius:3,transition:"background .2s",border:"none",cursor:"pointer",fontFamily:"inherit"}}
             onMouseEnter={e=>e.currentTarget.style.background=C.blueDark}
-            onMouseLeave={e=>e.currentTarget.style.background=C.blue}>Solicitar presupuesto</button>
+            onMouseLeave={e=>e.currentTarget.style.background=C.blue}>Háblanos de tu proyecto</button>
         </div>
         <button className="mnb" onClick={()=>setOp(!op)}
           style={{display:"none",flexDirection:"column",gap:5,background:"none",border:"none",cursor:"pointer",padding:4}}>
@@ -1039,7 +1080,7 @@ function Nav({route,light}){
           ))}
           <button onClick={()=>{openContacto();setOp(false);}}
             style={{display:"block",marginTop:14,fontSize:14,fontWeight:700,color:C.blue,background:"none",border:"none",cursor:"pointer",padding:0,fontFamily:"inherit"}}>
-            Solicitar presupuesto →
+            Háblanos de tu proyecto →
           </button>
         </div>
       )}
@@ -1187,92 +1228,90 @@ function EmpleoForm(){
   );
 }
 
+// Novedades: publicaciones de las redes sociales de Nebego (LinkedIn e Instagram), de la más nueva a la más antigua.
+// Para añadir una: copiar un bloque, cambiar slug (único), fecha, textos, imagen y enlaces, y regenerar la web.
+// image: imagen de la tarjeta. fit:"contain" para imágenes con texto (se ven enteras sobre fondo azul).
+// hero: foto de cabecera del artículo (si no se indica, se usa image).
+const LI="https://www.linkedin.com/feed/update/urn:li:activity:";
+const IG="https://www.instagram.com/p/";
 const ARTICULOS=[
-  {slug:"puntos-recarga-vehiculo-electrico",category:"VEHÍCULO ELÉCTRICO",date:"MAY 28, 2026",image:imgNovRecarga,
-   title:"Puntos de recarga para vehículo eléctrico en garajes comunitarios",
-   excerpt:"La instalación de un cargador en un garaje comunitario requiere estudiar el trazado, las protecciones, la legalización y la seguridad de la instalación para garantizar un funcionamiento correcto desde el primer día.",
+  {slug:"ayudas-navarra-coche-electrico-recarga",category:"Ayudas",date:"3 NOV 2026",image:"assets/blog-ayudas.jpg",fit:"contain",hero:imgRecarga,
+   title:"Nuevas ayudas en Navarra para el coche eléctrico y los puntos de recarga",
+   excerpt:"Navarra ha anunciado 12,6 millones de euros en ayudas para el coche eléctrico y la recarga. Te contamos lo que se sabe y cómo prepararte.",
+   redes:[["LinkedIn",LI+"7523301443127369729/"]],
    content:[
-     {p:"Instalar un punto de recarga en un garaje comunitario es cada vez más habitual, pero requiere tener en cuenta varios aspectos técnicos y de convivencia para que funcione bien y sea seguro."},
-     {h:"Trazado de la canalización"},
-     {p:"Desde el contador o el cuadro correspondiente hasta la plaza de garaje hay que definir un trazado de canalización ordenado, que además permita que otros vecinos puedan instalar su punto de recarga en el futuro sin rehacer el trabajo."},
-     {h:"Contador, protecciones y gestión de carga"},
-     {p:"Cada punto de recarga se asocia a un contador y a sus protecciones específicas. En instalaciones con varios puntos, los sistemas de gestión y balanceo de carga permiten repartir la potencia disponible y evitar sobrecargas."},
-     {h:"Comunicación a la comunidad"},
-     {p:"Aunque la instalación de un punto individual no requiere la aprobación de la comunidad, sí hay que comunicarlo. Planificar una infraestructura común desde el principio suele ser la opción más eficiente y económica a medio plazo."},
-     {h:"Legalización y seguridad"},
-     {p:"La instalación debe cumplir la normativa (ITC-BT-52), quedar correctamente protegida y legalizada. Una ejecución profesional garantiza la seguridad del garaje y del resto de la instalación del edificio."},
-     {p:"En Nebego instalamos y legalizamos puntos de recarga para viviendas, comunidades y empresas."},
+     {p:"Navarra ha anunciado nuevas ayudas para el coche eléctrico y los puntos de recarga: 12,6 millones de euros en total. Esto es lo que se sabe:"},
+     {list:["11 millones para comprar coches eléctricos e instalar puntos de recarga en 2027 y 2028. Podrán pedirlas particulares, autónomos y empresas.","Para turismos se habla de entre 2.500 y 5.000 euros por coche.","Otros 1,25 millones para que empresas y autónomos den de baja vehículos de combustión."]},
+     {p:"Todavía no se pueden solicitar: faltan por publicarse las bases en el Boletín Oficial de Navarra, que fijarán cuantías, requisitos y plazos. Antes de empezar ninguna obra, conviene esperar a conocerlas."},
+     {p:"Si estás pensando en poner un cargador en casa, en tu garaje o en tu empresa, es buen momento para ir preparando el estudio y el presupuesto. Así, cuando se abra la convocatoria, lo tendrás todo listo."},
+     {p:"En Nebego instalamos y legalizamos puntos de recarga. Si quieres que lo veamos, escríbenos."},
    ]},
-  {slug:"eficiencia-energetica-edificios",category:"EFICIENCIA ENERGÉTICA",date:"MAY 15, 2026",image:imgNovEficiencia,
-   title:"Eficiencia energética en edificios: pequeñas mejoras con gran impacto",
-   excerpt:"La iluminación LED, los detectores de presencia, la regulación horaria y los sistemas de control permiten reducir consumos y mejorar el funcionamiento eléctrico de edificios, comunidades y empresas.",
+  {slug:"orden-que-se-nota-cuadro-sala-calderas",category:"Trabajo terminado",date:"29 OCT 2026",image:"assets/blog-cuadro.jpg",fit:"contain",hero:imgInstElec,
+   title:"Orden que se nota: el cuadro de una sala de calderas",
+   excerpt:"Cada circuito etiquetado, cada bomba con su protección y el cableado recogido y peinado. Un cuadro ordenado da menos sustos.",
+   redes:[["Instagram",IG+"DfFOq2njeWu/"]],
    content:[
-     {p:"Mejorar la eficiencia energética de un edificio no siempre requiere grandes obras. A menudo, un conjunto de pequeñas mejoras bien planteadas tiene un impacto notable en el consumo y en el confort."},
-     {h:"Iluminación LED y detectores de presencia"},
-     {p:"Sustituir la iluminación antigua por LED reduce el consumo de forma inmediata y alarga la vida útil. Añadir detectores de presencia en zonas comunes, aseos o almacenes evita que las luces queden encendidas innecesariamente."},
-     {h:"Regulación horaria y sectorización"},
-     {p:"Programar encendidos y apagados según los horarios de uso, y sectorizar los consumos por zonas, permite ajustar el gasto a las necesidades reales del edificio en cada momento."},
-     {h:"Mantenimiento y control energético"},
-     {p:"Un cuadro eléctrico en buen estado y con las protecciones adecuadas funciona de forma más eficiente y segura. Los sistemas de control y monitorización energética ayudan a saber dónde se consume y a tomar decisiones con datos."},
-     {p:"En Nebego podemos estudiar tu edificio y proponerte mejoras de eficiencia adaptadas a su uso."},
+     {p:"Orden que se nota."},
+     {p:"Cuadro de una sala de calderas recién terminado: cada circuito etiquetado, cada bomba con su protección y el cableado recogido y peinado."},
+     {p:"Un cuadro ordenado se revisa antes, se amplía sin líos y da menos sustos."},
+     {p:"¿Tu instalación necesita una puesta al día? Escríbenos y te la revisamos."},
    ]},
-  {slug:"instalaciones-electricas-obra-nueva",category:"OBRA NUEVA",date:"JUN 26, 2026",image:imgNovObra,
-   title:"Instalaciones eléctricas en obra nueva: claves para un buen resultado",
-   excerpt:"Una instalación eléctrica bien ejecutada empieza mucho antes de pasar el primer cable. La planificación, la coordinación con otros gremios y una ejecución ordenada son fundamentales para garantizar seguridad, eficiencia y un resultado duradero.",
+  {slug:"renovamos-electricidad-fronton",category:"Obra",date:"29 OCT 2026",image:"assets/blog-fronton.jpg",fit:"contain",hero:imgPCI,
+   title:"Renovamos la electricidad de un frontón en la Comarca de Pamplona",
+   excerpt:"Suministro de reserva, cuadros nuevos, iluminación, detección de incendios y megafonía: así hemos renovado la instalación de un frontón.",
+   redes:[["LinkedIn",LI+"7521551139327184897/"]],
    content:[
-     {p:"En una obra nueva, la instalación eléctrica no es una fase que se resuelva al final: condiciona el resultado desde el primer momento. Una buena planificación evita sobrecostes, retrasos y correcciones cuando la obra ya está avanzada."},
-     {h:"Planificar desde el inicio"},
-     {p:"Antes de abrir rozas o tirar el primer cable conviene tener claro el reparto de circuitos, la potencia prevista, la ubicación de los cuadros y los puntos de consumo. Definir esto sobre plano, junto con la dirección facultativa, permite dimensionar correctamente la instalación y anticipar necesidades futuras."},
-     {h:"Coordinación con el resto de gremios"},
-     {p:"La electricidad convive con fontanería, climatización y telecomunicaciones. Coordinar el trazado de las canalizaciones con el resto de instaladores evita cruces, interferencias y trabajos que haya que rehacer. En obra, esa coordinación marca la diferencia entre una ejecución ordenada y una llena de imprevistos."},
-     {h:"Canalizaciones, cuadros e iluminación"},
-     {p:"Las canalizaciones deben quedar registrables y bien dimensionadas para admitir futuras ampliaciones. El cuadro eléctrico se diseña con las protecciones adecuadas y un reparto de circuitos claro e identificado. La iluminación se define según el uso de cada espacio, buscando confort y eficiencia."},
-     {h:"Telecomunicaciones y legalización"},
-     {p:"En obra nueva es habitual integrar la infraestructura de telecomunicaciones (datos, TV y fibra) desde el principio. Y, al terminar, la instalación debe legalizarse: certificado, documentación técnica y, cuando corresponde, inspección. Dejar este paso para el final sin haberlo previsto suele generar problemas."},
-     {p:"En Nebego trabajamos la instalación eléctrica de obra nueva de forma integral, desde el diseño hasta la puesta en marcha y su legalización."},
+     {p:"Detrás de cada partido en un frontón hay una instalación eléctrica que tiene que responder siempre."},
+     {p:"En los últimos meses hemos renovado la electricidad de un frontón en la Comarca de Pamplona. Entre otras cosas:"},
+     {list:["Un suministro de reserva, para que lo esencial siga funcionando aunque falle la red principal.","Cuadros eléctricos nuevos.","Iluminación de la cancha, del exterior y de emergencia.","Detección de incendios y megafonía para avisar y evacuar al público."]},
+     {p:"En un edificio con público la seguridad es lo primero, y eso pasa por una instalación bien hecha y bien coordinada con todos los que participan en la obra. Gracias al equipo que lo ha hecho posible."},
+     {p:"¿Tienes un proyecto parecido? Escríbenos y lo vemos."},
    ]},
-  {slug:"revisar-instalacion-electrica",category:"MANTENIMIENTO",date:"JUN 10, 2026",image:imgNovRevision,
-   title:"¿Cuándo conviene revisar una instalación eléctrica?",
-   excerpt:"Los disparos del diferencial, los cuadros antiguos, los enchufes deteriorados o una ampliación de potencia pueden ser señales de que ha llegado el momento de revisar la instalación y evitar problemas mayores.",
+  {slug:"jornada-diario-de-navarra-pymes-ia",category:"Eventos",date:"5 OCT 2026",image:"assets/blog-geo.jpg",
+   title:"Nebego, en la jornada del Diario de Navarra para pymes",
+   excerpt:"Iker Beraza estuvo en representación de Nebego en una jornada sobre cómo aparecer cuando los clientes preguntan a la inteligencia artificial.",
+   autor:"Iker Beraza",
+   redes:[["LinkedIn",LI+"7512765233464107008/"]],
    content:[
-     {p:"Una instalación eléctrica no se mantiene siempre en las mismas condiciones. Con los años, el uso y las ampliaciones pueden aparecer señales de que ha llegado el momento de revisarla."},
-     {h:"Señales de aviso"},
-     {p:"Los disparos frecuentes del diferencial, los enchufes o interruptores que se calientan o están deteriorados, y los cuadros antiguos con fusibles o sin protección diferencial son indicios claros de que la instalación necesita una revisión."},
-     {h:"Ampliaciones y cambios de uso"},
-     {p:"Cuando se amplía la potencia contratada, se reforma una vivienda o un local, o cambia el uso del espacio (por ejemplo, de vivienda a oficina o de local a hostelería), la instalación existente puede quedarse corta o dejar de cumplir la normativa vigente."},
-     {h:"Revisiones preventivas"},
-     {p:"Más allá de las averías, una revisión preventiva periódica permite detectar problemas antes de que provoquen un corte, un daño en los equipos o un riesgo para las personas. Es especialmente recomendable en comunidades, empresas y locales con uso intensivo."},
-     {p:"Si tienes dudas sobre el estado de tu instalación, en Nebego podemos revisarla y proponerte las actuaciones necesarias."},
+     {p:"Hace unos días estuve en la jornada de publicidad que organizó el Diario de Navarra (DN Management) para pymes y pude ir en representación de Montajes Eléctricos Nebego."},
+     {p:"Nos hablaron principalmente del término GEO, Generative Engine Optimization. Dicho rápido: cómo conseguir que tu empresa aparezca cuando alguien le pregunta a ChatGPT, Gemini o Copilot en vez de buscar en Google."},
+     {p:"Hasta ahora todos hablábamos de SEO. Pero cada vez más gente pregunta directamente a una IA: ¿quién me hace la instalación eléctrica de una nave en Pamplona?, y lo que responde depende, entre otras cosas, de lo que esa IA ha leído sobre nosotros."},
+     {p:"Me encantó. Todo explicado en base a números y casos reales de otras empresas. Una suerte haber asistido y estar junto a profesionales que están en la última. Gracias al Diario de Navarra por organizarla."},
+     {p:"Espero que la próxima vez que preguntes a ChatGPT, aparezcamos nosotros."},
    ]},
-  {slug:"legalizacion-instalaciones-electricas",category:"LEGALIZACIÓN",date:"ABR 30, 2026",image:imgNovLegal,
-   title:"Legalización de instalaciones eléctricas: documentación habitual",
-   excerpt:"Certificados, memorias técnicas, esquemas unifilares, documentación del fabricante e inspecciones OCA forman parte de los trámites habituales para registrar una instalación eléctrica correctamente.",
+  {slug:"buscamos-oficial-electricista",category:"Empleo",date:"11 SEP 2026",image:imgEmpleo,
+   title:"Buscamos Oficial Electricista en Pamplona",
+   excerpt:"Necesitamos incorporar un Oficial Electricista para nuestro equipo en Pamplona. ¿Conoces a alguien que pueda estar interesado?",
+   redes:[["LinkedIn",LI+"7504150416935346176/"]],
    content:[
-     {p:"Legalizar una instalación eléctrica consiste en documentar y registrar que cumple la normativa. Conviene conocer qué documentación interviene habitualmente en el proceso."},
-     {h:"Certificado de instalación eléctrica"},
-     {p:"El certificado de instalación eléctrica (conocido como boletín) lo emite el instalador autorizado y acredita que la instalación se ha ejecutado conforme al Reglamento Electrotécnico de Baja Tensión (REBT)."},
-     {h:"Memoria técnica y esquemas unifilares"},
-     {p:"Según el tipo de instalación, se requiere una memoria técnica de diseño o un proyecto. Los esquemas unifilares reflejan cómo está organizada la instalación: circuitos, protecciones y potencias."},
-     {h:"Inspección OCA y registro"},
-     {p:"En determinados casos, según la potencia o el tipo de local, es obligatoria la inspección de un Organismo de Control Autorizado (OCA). Finalmente, la instalación se registra ante la administración competente, junto con la documentación del fabricante de los equipos cuando corresponde."},
-     {p:"Como instaladores autorizados, en Nebego nos encargamos de ejecutar y legalizar la instalación con toda su documentación."},
+     {p:"¡Estamos buscando personal en Nebego!"},
+     {p:"Necesitamos incorporar un Oficial Electricista para nuestro equipo en Pamplona."},
+     {p:"¿Conoces a alguien que pueda estar interesado? Puede mandarnos su currículum a contacto@nebego.com o desde la sección Empleo de esta web."},
    ]},
-  {slug:"seguridad-electrica-empresas-comunidades",category:"SEGURIDAD",date:"ABR 16, 2026",image:imgNovSeguridad,
-   title:"Seguridad eléctrica en empresas y comunidades",
-   excerpt:"Un cuadro eléctrico ordenado, protecciones adecuadas, identificación de circuitos y revisiones periódicas ayudan a prevenir averías, mejorar la seguridad y alargar la vida útil de la instalación.",
+  {slug:"25-anos-instalando-electricidad-navarra",category:"Empresa",date:"18 AGO 2026",image:imgNave,
+   title:"25 años instalando electricidad en Navarra",
+   excerpt:"Desde el año 2000 hemos crecido proyecto a proyecto. En este vídeo te contamos de dónde venimos y cómo hemos llegado hasta aquí.",
+   redes:[["Vídeo en LinkedIn",LI+"7495484530024247298/"],["Reel en Instagram","https://www.instagram.com/reel/DcLiJVmoGw6/"]],
    content:[
-     {p:"La seguridad eléctrica no depende de un único elemento, sino del conjunto de la instalación y de su mantenimiento. En empresas y comunidades, donde el uso es intensivo, cobra especial importancia."},
-     {h:"Protecciones adecuadas"},
-     {p:"Los diferenciales protegen a las personas frente a los contactos eléctricos, y los magnetotérmicos protegen la instalación frente a sobrecargas y cortocircuitos. Que estén bien dimensionados y en buen estado es fundamental."},
-     {h:"Puesta a tierra"},
-     {p:"Una puesta a tierra correcta es la base de la seguridad de cualquier instalación: permite derivar las corrientes de fallo y que las protecciones actúen como deben. Conviene comprobar su estado periódicamente."},
-     {h:"Cuadros ordenados e identificación de circuitos"},
-     {p:"Un cuadro eléctrico ordenado, con los circuitos correctamente identificados, facilita el mantenimiento, acelera la localización de averías y reduce el riesgo de errores en cualquier intervención."},
-     {h:"Revisiones periódicas"},
-     {p:"El mantenimiento preventivo y las revisiones periódicas permiten detectar problemas a tiempo y mantener la instalación en condiciones seguras a lo largo del tiempo."},
-     {p:"En Nebego ayudamos a empresas y comunidades a mantener sus instalaciones seguras y al día."},
+     {p:"25 años instalando electricidad en Navarra dan para mucho."},
+     {p:"Desde el año 2000, en Montajes Eléctricos Nebego hemos crecido proyecto a proyecto, manteniendo la misma forma de trabajar: compromiso, cercanía y responsabilidad."},
+     {p:"En este vídeo te contamos un poco más sobre nuestra historia: de dónde venimos y cómo hemos llegado hasta aquí."},
+   ]},
+  {slug:"punto-recarga-garaje-comunitario",category:"Vehículo eléctrico",date:"11 AGO 2026",image:imgNovRecarga,
+   title:"Punto de recarga en un garaje comunitario: lo que hay que saber",
+   excerpt:"Instalar un cargador en un garaje comunitario es cada vez más habitual, pero no es tan sencillo como conectar un cable.",
+   redes:[["Documento en LinkedIn",LI+"7492916005611159553/"],["Instagram",IG+"Db5pm2GDU8e/"]],
+   content:[
+     {p:"Instalar un punto de recarga en un garaje comunitario es cada vez más habitual, pero no es tan sencillo como conectar un cable."},
+     {p:"Hay varios aspectos técnicos y de convivencia que hay que tener en cuenta para que la instalación funcione bien y sea segura. Te lo explicamos paso a paso en el documento que publicamos en LinkedIn."},
+     {p:"En Nebego instalamos y legalizamos puntos de recarga para viviendas, comunidades y empresas. ¡Anímate y hazlo con nosotros! Pide tu presupuesto sin compromiso."},
    ]},
 ];
+
+function RedesChips({p}){
+  const n=[...new Set((p.redes||[]).map(([t])=>/Instagram/.test(t)?"Instagram":"LinkedIn"))];
+  return <div style={{display:"flex",gap:6,marginBottom:14}}>{n.map(x=><span key={x} style={{fontSize:10.5,fontWeight:700,letterSpacing:".06em",textTransform:"uppercase",color:"#1C3266",background:C.blueLight,padding:"4px 9px",borderRadius:99}}>{x}</span>)}</div>;
+}
 
 function ArticlePage({slug}){
   useEffect(()=>{ window.scrollTo(0,0); },[slug]);
@@ -1286,12 +1325,12 @@ function ArticlePage({slug}){
   return (
     <>
       <section style={{position:"relative",minHeight:"clamp(340px,50vh,520px)",display:"flex",alignItems:"flex-end",overflow:"hidden"}}>
-        <img src={a.image} alt={a.title} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
+        <img src={a.hero||a.image} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
         <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(12,24,45,.5) 0%,rgba(12,24,45,.35) 42%,rgba(12,24,45,.92) 100%)"}}/>
         <div style={{position:"relative",zIndex:2,maxWidth:900,margin:"0 auto",width:"100%",padding:"120px clamp(1rem,4vw,2.8rem) clamp(2rem,4vw,3rem)"}}>
           <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16,flexWrap:"wrap"}}>
             <span style={{fontSize:11,fontWeight:700,letterSpacing:".07em",color:C.white,background:C.accent,padding:"4px 11px",borderRadius:3,textTransform:"uppercase"}}>{a.category}</span>
-            <span style={{fontSize:13,color:"rgba(255,255,255,.8)"}}>{a.date}</span>
+            <span style={{fontSize:13,color:"rgba(255,255,255,.8)"}}>{a.date}{a.autor?" · "+a.autor:""}</span>
           </div>
           <h1 className="b" style={{fontSize:"clamp(1.8rem,4vw,3rem)",fontWeight:800,color:C.white,lineHeight:1.15,letterSpacing:"-.02em",maxWidth:820}}>{a.title}</h1>
         </div>
@@ -1302,9 +1341,19 @@ function ArticlePage({slug}){
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M9 3.5 5 7.5l4 4M5 7.5h8" stroke={C.blue} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
             Volver a Novedades
           </button>
+          {a.fit && <img src={a.image} alt={a.title} style={{width:"100%",height:"auto",display:"block",borderRadius:6,margin:"0 0 clamp(1.5rem,3vw,2.2rem)",background:"#0E1E3A"}}/>}
           {a.content.map((b,i)=> b.h!==undefined
             ? <h2 key={i} className="b" style={{fontSize:"clamp(1.25rem,2.2vw,1.65rem)",fontWeight:800,color:C.ink,letterSpacing:"-.01em",margin:"clamp(1.8rem,3.5vw,2.6rem) 0 12px"}}>{b.h}</h2>
+            : b.list ? <ul key={i} style={{margin:"0 0 18px",paddingLeft:22}}>{b.list.map((t,k)=><li key={k} style={{fontSize:"clamp(1rem,1.4vw,1.1rem)",color:C.grayDark,lineHeight:1.8,marginBottom:6}}>{t}</li>)}</ul>
             : <p key={i} style={{fontSize:"clamp(1rem,1.4vw,1.1rem)",color:C.grayDark,lineHeight:1.95,marginBottom:16}}>{b.p}</p>
+          )}
+          {a.redes && a.redes.length>0 && (
+            <div style={{display:"flex",flexWrap:"wrap",gap:10,alignItems:"center",marginTop:"clamp(1.4rem,3vw,2rem)"}}>
+              <span style={{fontSize:13,color:C.grayText,fontWeight:600,marginRight:4}}>Publicado en nuestras redes:</span>
+              {a.redes.map(([t,u])=>(
+                <a key={u} href={u} target="_blank" rel="noopener" style={{display:"inline-flex",alignItems:"center",gap:7,fontSize:13,fontWeight:700,color:C.blue,border:`1.5px solid ${C.blue}`,borderRadius:3,padding:"8px 14px"}}>Ver en {t} <IcoExt/></a>
+              ))}
+            </div>
           )}
           <div style={{marginTop:"clamp(2rem,4vw,3rem)",paddingTop:"clamp(1.5rem,3vw,2rem)",borderTop:`1px solid ${C.grayLight}`}}>
             <button onClick={()=>go("blog")} style={{fontSize:13.5,fontWeight:700,color:C.blue,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",padding:0,display:"inline-flex",alignItems:"center",gap:7}}>
@@ -1331,34 +1380,61 @@ function ArticlePage({slug}){
 function BlogContent(){
   return (
     <section style={{background:C.white,padding:"clamp(7rem,11vw,9rem) clamp(1rem,4vw,2.8rem) clamp(3.5rem,6vw,5.5rem)"}}>
-      <div style={{maxWidth:1120,margin:"0 auto"}}>
+      <div style={{maxWidth:1240,margin:"0 auto"}}>
         <V>
-          <div style={{marginBottom:"clamp(3rem,6vw,5rem)"}}>
-            <h1 className="b" style={{fontSize:"clamp(2.4rem,5vw,4rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",lineHeight:1.05,marginBottom:18}}>Novedades</h1>
-            <p style={{fontSize:"clamp(1rem,1.5vw,1.18rem)",color:C.grayText,lineHeight:1.7,maxWidth:640}}>Artículos recientes sobre instalaciones eléctricas, eficiencia energética, mantenimiento y novedades del sector.</p>
+          <div style={{marginBottom:"clamp(2.5rem,5vw,4rem)"}}>
+            <h1 className="b" style={{fontSize:"clamp(2.4rem,5vw,4rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",lineHeight:1.05,marginBottom:18}}>Blog</h1>
+            <p style={{fontSize:"clamp(1rem,1.5vw,1.18rem)",color:C.grayText,lineHeight:1.7,maxWidth:680}}>Lo último que hemos publicado en nuestras redes y las respuestas a las dudas más habituales sobre instalaciones eléctricas.</p>
           </div>
         </V>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"clamp(3rem,5vw,5rem) clamp(2rem,4vw,3.5rem)"}} className="dcol">
-          {ARTICULOS.map((p,i)=>(
-            <V key={i} d={`d${(i%2)+1}`}>
-              <a {...linkProps("novedades/"+p.slug)} style={{cursor:"pointer",display:"flex",flexDirection:"column"}}>
-                <div style={{position:"relative",width:"100%",aspectRatio:"16 / 10",overflow:"hidden",borderRadius:4,marginBottom:20}}>
-                  <img src={p.image} alt={p.title} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",transition:"transform .5s"}}
-                    onMouseEnter={e=>e.currentTarget.style.transform="scale(1.04)"}
-                    onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}/>
-                  <span style={{position:"absolute",top:16,left:16,background:C.white,color:C.ink,fontSize:11,fontWeight:800,letterSpacing:".09em",textTransform:"uppercase",padding:"7px 13px",borderRadius:2,boxShadow:"0 2px 8px rgba(0,0,0,.12)"}}>{p.category}</span>
+        <div className="blog2col" style={{display:"grid",gridTemplateColumns:"minmax(0,1.35fr) minmax(0,1fr)",gap:"clamp(2.5rem,5vw,4.5rem)",alignItems:"start"}}>
+          {/* Columna 1: Novedades */}
+          <div>
+            <h2 className="b" style={{fontSize:"clamp(1.5rem,2.4vw,2rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",paddingBottom:14,marginBottom:"clamp(1.6rem,3vw,2.2rem)",borderBottom:`3px solid ${C.blue}`}}>Novedades</h2>
+            <div style={{display:"flex",flexDirection:"column",gap:"clamp(2.5rem,4vw,3.5rem)"}}>
+              {ARTICULOS.map((p,i)=>(
+                <V key={p.slug}>
+                  <a {...linkProps("novedades/"+p.slug)} style={{cursor:"pointer",display:"flex",flexDirection:"column"}}>
+                    <div style={{position:"relative",width:"100%",aspectRatio:"16 / 10",overflow:"hidden",borderRadius:4,marginBottom:18}}>
+                      <img src={p.image} alt={p.title} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:p.fit||"cover",background:p.fit?"#0E1E3A":"transparent",transition:"transform .5s"}}
+                        onMouseEnter={e=>e.currentTarget.style.transform="scale(1.04)"}
+                        onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}/>
+                      <span style={{position:"absolute",top:14,left:14,background:C.white,color:C.ink,fontSize:10.5,fontWeight:800,letterSpacing:".09em",textTransform:"uppercase",padding:"6px 11px",borderRadius:2,boxShadow:"0 2px 8px rgba(0,0,0,.12)"}}>{p.category}</span>
+                    </div>
+                    <div style={{fontSize:12,fontWeight:600,letterSpacing:".1em",color:C.grayText,textTransform:"uppercase",marginBottom:10}}>{p.date}</div>
+                    <h3 className="b" style={{fontSize:"clamp(1.3rem,2vw,1.65rem)",fontWeight:800,color:C.ink,lineHeight:1.25,letterSpacing:"-.01em",marginBottom:12,transition:"color .2s"}}
+                      onMouseEnter={e=>e.currentTarget.style.color=C.blue}
+                      onMouseLeave={e=>e.currentTarget.style.color=C.ink}>{p.title}</h3>
+                    <p style={{fontSize:15,color:C.grayText,lineHeight:1.8,marginBottom:16}}>{p.excerpt}</p>
+                    <RedesChips p={p}/>
+                    <span style={{fontSize:12.5,fontWeight:800,letterSpacing:".1em",color:C.blue,textTransform:"uppercase",display:"inline-flex",alignItems:"center",gap:8}}>Leer más
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h9M7 2.5 11.5 7 7 11.5" stroke={C.blue} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </span>
+                  </a>
+                </V>
+              ))}
+            </div>
+          </div>
+          {/* Columna 2: Preguntas frecuentes */}
+          <aside id="preguntas" className="blogfaq">
+            <h2 className="b" style={{fontSize:"clamp(1.5rem,2.4vw,2rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",paddingBottom:14,marginBottom:"clamp(1.2rem,2.5vw,1.8rem)",borderBottom:`3px solid ${C.blue}`}}>Preguntas frecuentes</h2>
+            {FAQS.map((cat,ci)=>(
+              <div key={ci} style={{marginBottom:"clamp(1.8rem,3vw,2.4rem)"}}>
+                <div style={{fontSize:11.5,fontWeight:800,letterSpacing:".12em",color:C.blue,textTransform:"uppercase",marginBottom:6}}>{cat.cat}</div>
+                <div style={{borderTop:`1px solid ${C.grayLight}`}}>
+                  {cat.items.map((it,ii)=><FaqItem key={ii} q={it.q} a={it.a}/>)}
                 </div>
-                <div style={{fontSize:12,fontWeight:600,letterSpacing:".1em",color:C.grayText,textTransform:"uppercase",marginBottom:12}}>{p.date}</div>
-                <h2 className="b" style={{fontSize:"clamp(1.35rem,2vw,1.75rem)",fontWeight:800,color:C.ink,lineHeight:1.25,letterSpacing:"-.01em",marginBottom:14,transition:"color .2s"}}
-                  onMouseEnter={e=>e.currentTarget.style.color=C.blue}
-                  onMouseLeave={e=>e.currentTarget.style.color=C.ink}>{p.title}</h2>
-                <p style={{fontSize:15,color:C.grayText,lineHeight:1.8,marginBottom:22}}>{p.excerpt}</p>
-                <span style={{fontSize:12.5,fontWeight:800,letterSpacing:".1em",color:C.blue,textTransform:"uppercase",display:"inline-flex",alignItems:"center",gap:8}}>Leer más
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h9M7 2.5 11.5 7 7 11.5" stroke={C.blue} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                </span>
-              </a>
-            </V>
-          ))}
+              </div>
+            ))}
+            <div style={{background:C.blueLight,borderRadius:6,padding:"clamp(1.3rem,2.5vw,1.8rem)"}}>
+              <div className="b" style={{fontSize:17,fontWeight:800,color:C.ink,marginBottom:8}}>¿No encuentras tu respuesta?</div>
+              <p style={{fontSize:14,color:C.grayText,lineHeight:1.7,marginBottom:16}}>Escríbenos y te contestamos lo antes posible.</p>
+              <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+                <button onClick={()=>openContacto()} style={{background:C.blue,color:C.white,fontWeight:700,fontSize:13,letterSpacing:".05em",textTransform:"uppercase",padding:"11px 18px",borderRadius:3,border:"none",cursor:"pointer",fontFamily:"inherit"}}>Contactar</button>
+                <a href={WHATSAPP_URL} target="_blank" rel="noopener" style={{background:"#1FA855",color:C.white,fontWeight:700,fontSize:13,letterSpacing:".05em",textTransform:"uppercase",padding:"11px 18px",borderRadius:3}}>WhatsApp</a>
+              </div>
+            </div>
+          </aside>
         </div>
       </div>
     </section>
@@ -1366,7 +1442,7 @@ function BlogContent(){
 }
 
 function Footer(){
-  const links=[["Nosotros","nosotros"],["Servicios","servicios"],["Proyectos","proyectos"],["Novedades","blog"],["Preguntas frecuentes","faqs"],["Empleo","empleo"]];
+  const links=[["Nosotros","nosotros"],["Servicios","servicios"],["Proyectos","proyectos"],["Novedades","blog"],["Preguntas frecuentes","blog"],["Empleo","empleo"]];
   return (
     <footer style={{borderTop:"3px solid "+C.blue,background:"#131a26",padding:"clamp(2.5rem,4vw,3.5rem) clamp(1rem,4vw,2.8rem)"}}>
       <div style={{maxWidth:1280,margin:"0 auto"}}>
@@ -1712,8 +1788,8 @@ function NovedadesPreview(){
         <V>
           <div style={{textAlign:"center",marginBottom:"clamp(2.5rem,5vw,4rem)"}}>
             <div style={{fontSize:12,fontWeight:800,letterSpacing:".16em",color:C.blue,textTransform:"uppercase",marginBottom:14}}>Novedades</div>
-            <h2 className="b" style={{fontSize:"clamp(1.8rem,3.4vw,2.8rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",marginBottom:16}}>Infórmate con nosotros</h2>
-            <p style={{fontSize:15,color:C.grayText,lineHeight:1.75,maxWidth:600,margin:"0 auto"}}>Consejos, novedades y soluciones del sector eléctrico para ayudarte a entender mejor tu instalación.</p>
+            <h2 className="b" style={{fontSize:"clamp(1.8rem,3.4vw,2.8rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",marginBottom:16}}>Lo último de Nebego</h2>
+            <p style={{fontSize:15,color:C.grayText,lineHeight:1.75,maxWidth:600,margin:"0 auto"}}>Lo último de nuestras obras, ayudas, consejos y el día a día del equipo, tal como lo contamos en LinkedIn e Instagram.</p>
           </div>
         </V>
         <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:"clamp(2rem,3.5vw,3rem)"}}>
@@ -1721,7 +1797,7 @@ function NovedadesPreview(){
             <V key={i} d={`d${(i%3)+1}`}>
               <a {...linkProps("novedades/"+p.slug)} style={{cursor:"pointer",display:"flex",flexDirection:"column",height:"100%"}}>
                 <div style={{position:"relative",width:"100%",aspectRatio:"16 / 10",overflow:"hidden",borderRadius:4,marginBottom:18}}>
-                  <img src={p.image} alt={p.title} style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",transition:"transform .5s"}}
+                  <img src={p.image} alt={p.title} loading="lazy" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:p.fit||"cover",background:p.fit?"#0E1E3A":"transparent",transition:"transform .5s"}}
                     onMouseEnter={e=>e.currentTarget.style.transform="scale(1.04)"}
                     onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}/>
                   <span style={{position:"absolute",top:14,left:14,background:C.white,color:C.ink,fontSize:10.5,fontWeight:800,letterSpacing:".08em",textTransform:"uppercase",padding:"6px 11px",borderRadius:2,boxShadow:"0 2px 8px rgba(0,0,0,.12)"}}>{p.category}</span>
@@ -1731,6 +1807,7 @@ function NovedadesPreview(){
                   onMouseEnter={e=>e.currentTarget.style.color=C.blue}
                   onMouseLeave={e=>e.currentTarget.style.color=C.ink}>{p.title}</h3>
                 <p style={{fontSize:14,color:C.grayText,lineHeight:1.75,marginBottom:16,flex:1}}>{p.excerpt}</p>
+                <RedesChips p={p}/>
                 <span style={{fontSize:12,fontWeight:800,letterSpacing:".1em",color:C.blue,textTransform:"uppercase",display:"inline-flex",alignItems:"center",gap:7}}>Leer más
                   <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M1.5 6.5h10M6.5 1.5l5 5-5 5" stroke={C.blue} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </span>
@@ -1865,17 +1942,33 @@ function ComoTrabajamos(){
 const NAVE = { lat:42.7896, lng:-1.6248 }; // Calle B, Pol. Ind. Mutilva Baja (punto aproximado de la calle)
 const DIRECCION = "Pol. Ind. Mutilva Baja, Calle B, Nave 43, 31192 Mutilva (Navarra)";
 const COMO_LLEGAR = "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent("Montajes Eléctricos Nebego, Calle B 43, Polígono Industrial Mutilva Baja, 31192 Mutilva, Navarra");
-// Obras destacadas por localidad (según la sección Proyectos). Actualizar si se añaden proyectos.
+// Obras en el mapa: "label" tiene que coincidir con el nombre del proyecto en PROYECTOS.
+// Coordenadas de OpenStreetMap; las marcadas "aprox" están en la zona, no en el edificio exacto.
 const OBRAS_MAPA = [
-  {n:"Pamplona",lat:42.8157,lng:-1.6522,c:12},
-  {n:"Villava",lat:42.8319,lng:-1.6071,c:1},
-  {n:"Berriozar",lat:42.8357,lng:-1.6746,c:1},
-  {n:"Góngora (Aranguren)",lat:42.7612,lng:-1.5301,c:1},
-  {n:"Zubiri (Esteribar)",lat:42.9306,lng:-1.5043,c:2},
-  {n:"Cadreita",lat:42.2182,lng:-1.693,c:1},
-  {n:"Corella",lat:42.1152,lng:-1.7894,c:1},
-  {n:"Fustiñana",lat:42.0212,lng:-1.4857,c:1},
+  {label:"Palacio de Navarra",lugar:"Pamplona",lat:42.81557,lng:-1.64242},
+  {label:"Casa Seminario — Ayuntamiento de Pamplona",lugar:"Pamplona",lat:42.81800,lng:-1.64400}, // aprox
+  {label:"Estadio Larrabide",lugar:"Pamplona",lat:42.80850,lng:-1.64048},
+  {label:"Museo de Arte Contemporáneo — Universidad de Navarra",lugar:"Pamplona",lat:42.80322,lng:-1.65730},
+  {label:"Aulario UPNA",lugar:"Pamplona",lat:42.80044,lng:-1.63665},
+  {label:"Nave Districalor Txantrea",lugar:"la Txantrea (Pamplona)",lat:42.82820,lng:-1.63140}, // aprox
+  {label:"Volkswagen N1C",lugar:"Landaben (Pamplona)",lat:42.81152,lng:-1.69122},
+  {label:"Edificio Amigos — Universidad de Navarra",lugar:"Pamplona",lat:42.80043,lng:-1.65442},
+  {label:"Hotel Muga de Beloso",lugar:"Pamplona",lat:42.82050,lng:-1.62680}, // aprox
+  {label:"Quirófano Híbrido — Hospital de Navarra",lugar:"Pamplona",lat:42.80509,lng:-1.66855},
+  {label:"Búnker Radiología — Hospital de Navarra",lugar:"Pamplona",lat:42.80440,lng:-1.66760},
+  {label:"Pasarela Aranzadi",lugar:"Pamplona",lat:42.82430,lng:-1.63740}, // aprox
+  {label:"Oficinas Hacienda — Calle Esquíroz",lugar:"Pamplona",lat:42.80702,lng:-1.64960},
+  {label:"Centro de Salud de Berriozar",lugar:"Berriozar",lat:42.83495,lng:-1.67503},
+  {label:"Piscinas Municipales de Villava",lugar:"Villava",lat:42.83058,lng:-1.61370}, // aprox
+  {label:"Palacio Viejo de Góngora",lugar:"Góngora",lat:42.76204,lng:-1.53049},
+  {label:"Centro de Día de Zubiri",lugar:"Zubiri",lat:42.93060,lng:-1.50430}, // aprox
+  {label:"Ayuntamiento de Esteribar",lugar:"Zubiri (Esteribar)",lat:42.92678,lng:-1.50717},
+  {label:"Centro de Interpretación de las Bardenas Reales",lugar:"Fustiñana",lat:42.02120,lng:-1.48570}, // aprox
+  {label:"Casa de Cultura de Corella",lugar:"Corella",lat:42.11520,lng:-1.78940}, // aprox
+  {label:"Chill Out Restaurante Marisol",lugar:"Cadreita",lat:42.21820,lng:-1.69300}, // aprox
 ];
+
+function abrirObra(label){ window.__abrirObra=label; go("proyectos"); }
 
 function MapaVisita(){
   const ref=useRef(null);
@@ -1886,16 +1979,30 @@ function MapaVisita(){
     const map=L.map(el,{scrollWheelZoom:false,dragging:!L.Browser.mobile,tap:false,attributionControl:true});
     L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
     map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
-    const pts=[];
+    const esc=t=>t.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+    const comarca=[], todas=[];
     OBRAS_MAPA.forEach(o=>{
-      const m=L.circleMarker([o.lat,o.lng],{radius:7+Math.min(o.c,6),color:"#fff",weight:2,fillColor:"#6E8BFF",fillOpacity:.95}).addTo(map);
-      m.bindTooltip(o.n+" · "+o.c+(o.c===1?" obra":" obras"),{direction:"top",offset:[0,-6]});
-      pts.push([o.lat,o.lng]);
+      const m=L.circleMarker([o.lat,o.lng],{radius:8,color:"#fff",weight:2,fillColor:"#6E8BFF",fillOpacity:.95}).addTo(map);
+      m.bindTooltip('<div class="nbtip"><small>Obra en '+esc(o.lugar)+'</small><b>'+esc(o.label)+'</b><em>Ver proyecto →</em></div>',{direction:"top",offset:[0,-8]});
+      m.on("click",()=>abrirObra(o.label));
+      todas.push([o.lat,o.lng]); if(o.lat>42.6) comarca.push([o.lat,o.lng]);
     });
     const naveIcon=L.divIcon({className:"",html:'<div class="nbpin"><span></span>Nebego</div>',iconSize:[0,0]});
     L.marker([NAVE.lat,NAVE.lng],{icon:naveIcon,zIndexOffset:1000}).addTo(map).bindTooltip("Nave y oficinas de Nebego",{direction:"top",offset:[0,-14]});
-    pts.push([NAVE.lat,NAVE.lng]);
-    map.fitBounds(pts,{padding:[30,30]});
+    comarca.push([NAVE.lat,NAVE.lng]); todas.push([NAVE.lat,NAVE.lng]);
+    map.fitBounds(comarca,{padding:[28,28]});
+    // Botones para cambiar de vista
+    const Vista=L.Control.extend({onAdd(){
+      const d=L.DomUtil.create("div","nbviews");
+      d.innerHTML='<button type="button" data-v="c" class="on">Pamplona y comarca</button><button type="button" data-v="t">Toda Navarra</button>';
+      L.DomEvent.disableClickPropagation(d);
+      d.querySelectorAll("button").forEach(bt=>bt.onclick=()=>{
+        d.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===bt));
+        map.flyToBounds(bt.dataset.v==="c"?comarca:todas,{padding:[28,28],duration:.8});
+      });
+      return d;
+    }});
+    new Vista({position:"topright"}).addTo(map);
     return ()=>map.remove();
   },[]);
   return <div ref={ref} className="nbmap" role="img" aria-label="Mapa con la nave de Nebego en Mutilva y las obras destacadas en Navarra" style={{width:"100%",height:"100%",minHeight:380,borderRadius:8,overflow:"hidden",background:"#1d2b45"}}/>;
@@ -1930,7 +2037,7 @@ function VenAConocernos(){
               </div>
               <div style={{...item,borderBottom:"1px solid rgba(255,255,255,.18)"}}>
                 <div style={lbl}>Obras</div>
-                <div style={val}>Proyectos por toda Navarra</div>
+                <div style={val}>Pincha en los puntos azules del mapa para ver cada obra</div>
                 <a {...linkProps("proyectos")} style={lnk}>Ver proyectos</a>
               </div>
             </div>
@@ -1940,6 +2047,77 @@ function VenAConocernos(){
           <a href={WHATSAPP_URL} target="_blank" rel="noopener" style={{display:"inline-flex",alignItems:"center",gap:10,background:C.white,color:"#1C3266",fontWeight:700,fontSize:15,padding:"15px 30px",borderRadius:4}}>
             <IcoChat size={20} color="#1C3266"/> Escríbenos por WhatsApp
           </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------- Equipo (página Nosotros). Datos sacados de sus perfiles de LinkedIn (nov. 2026)
+const EQUIPO = [
+  {nombre:"Iñigo Beraza", cargo:"Gerente asistente", foto:"assets/equipo-inigo.jpg",
+   formacion:{t:"MBA",d:"EAE Business School · Madrid"},
+   puntos:[
+     "Gerente asistente de Nebego desde 2026, a cargo de la gestión administrativa",
+     "Impulsa la mejora de los procesos de la empresa con inteligencia artificial",
+     "Auxiliar administrativo en Nebego entre 2020 y 2022",
+     "Experiencia de trabajo en Estados Unidos y con equipos internacionales",
+   ], linkedin:"https://www.linkedin.com/in/i%C3%B1igoberaza/"},
+  {nombre:"Mikel Beraza", cargo:"Ingeniero técnico · Gerente y fundador", foto:"assets/equipo-mikel.jpg",
+   cifra:"+35", cifraTxt:"años en el sector eléctrico",
+   puntos:[
+     "Fundó Montajes Eléctricos Nebego en el año 2000 y la dirige desde entonces",
+     "Instalaciones eléctricas de baja y media tensión, telecomunicaciones y protección contra incendios",
+     "Lidera proyectos y coordina equipos para clientes públicos y privados",
+     "Formación en la Universidad Pública de Navarra",
+   ], linkedin:"https://www.linkedin.com/in/mikelberaza/"},
+  {nombre:"Iker Beraza", cargo:"Digitalización y análisis financiero", foto:"assets/equipo-iker.jpg",
+   formacion:{t:"Máster en Finanzas",d:"Barcelona Finance School"},
+   puntos:[
+     "Especializado en digitalizar la empresa con nuevas herramientas de inteligencia artificial",
+     "Análisis financiero de Nebego para apoyar las decisiones de gestión",
+     "Llevó el paso de Nebego a Microsoft 365 y la digitalización de fichajes y partes de trabajo",
+     "Experiencia en contabilidad y en cuadros de mando con Power BI",
+   ], linkedin:"https://www.linkedin.com/in/ikerberaza/"},
+];
+
+function Equipo(){
+  return (
+    <section id="equipo" style={{background:"#E9EBF0",padding:"clamp(4.5rem,8vw,7rem) clamp(1rem,4vw,2.8rem)"}}>
+      <div style={{maxWidth:1180,margin:"0 auto"}}>
+        <V>
+          <div style={{textAlign:"center",marginBottom:"clamp(2.2rem,4.5vw,3.4rem)"}}>
+            <h2 className="b" style={{fontSize:"clamp(1.9rem,3.4vw,3rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",marginBottom:14}}>Quiénes somos</h2>
+            <p style={{fontSize:"clamp(1rem,1.5vw,1.12rem)",color:C.grayText,lineHeight:1.7,maxWidth:620,margin:"0 auto"}}>Una empresa familiar: las personas que están detrás de Nebego.</p>
+          </div>
+        </V>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"clamp(1rem,2vw,1.4rem)"}} className="eqgrid">
+          {EQUIPO.map((p,i)=>(
+            <V key={p.nombre} d={`d${i+1}`} style={{height:"100%"}}>
+              <article style={{background:C.white,borderRadius:10,padding:"clamp(1.2rem,2vw,1.7rem)",height:"100%",display:"flex",flexDirection:"column"}}>
+                <img src={p.foto} alt={p.nombre} loading="lazy" style={{width:"100%",aspectRatio:"1 / 1",objectFit:"cover",borderRadius:8,display:"block",marginBottom:16}}/>
+                <div style={{fontSize:11.5,color:C.grayText,fontWeight:600,marginBottom:4}}>{p.cargo}</div>
+                <h3 className="b" style={{fontSize:"clamp(1.45rem,2.2vw,1.85rem)",fontWeight:800,color:C.ink,letterSpacing:"-.02em",paddingBottom:14,borderBottom:`1px solid ${C.grayLight}`}}>{p.nombre}</h3>
+                {p.formacion && <div style={{padding:"16px 0",borderBottom:`1px solid ${C.grayLight}`}}>
+                  <div style={{fontSize:11,fontWeight:700,letterSpacing:".1em",color:C.blue,textTransform:"uppercase",marginBottom:6}}>Formación</div>
+                  <div className="b" style={{fontSize:"clamp(1.35rem,2vw,1.7rem)",fontWeight:800,color:"#1C3266",lineHeight:1.1,letterSpacing:"-.02em"}}>{p.formacion.t}</div>
+                  <div style={{fontSize:13,color:C.grayText,marginTop:4}}>{p.formacion.d}</div>
+                </div>}
+                {p.cifra && <div style={{display:"flex",alignItems:"center",gap:14,padding:"16px 0",borderBottom:`1px solid ${C.grayLight}`}}>
+                  <div className="b" style={{fontSize:"clamp(2.2rem,3.4vw,2.9rem)",fontWeight:800,color:"#1C3266",lineHeight:1,letterSpacing:"-.03em"}}>{p.cifra}</div>
+                  <div style={{fontSize:12.5,color:C.grayText,lineHeight:1.45,maxWidth:170}}>{p.cifraTxt}</div>
+                </div>}
+                <ul style={{listStyle:"none",padding:"16px 0 0",margin:0,flex:1}}>
+                  {p.puntos.map((t,k)=>(
+                    <li key={k} style={{fontSize:13.5,color:C.grayDark,lineHeight:1.55,marginBottom:9,paddingLeft:14,position:"relative"}}>
+                      <span style={{position:"absolute",left:0,top:9,width:5,height:5,borderRadius:"50%",background:C.blue}}/>{t}
+                    </li>
+                  ))}
+                </ul>
+                <a href={p.linkedin} target="_blank" rel="noopener" style={{marginTop:10,fontSize:13.5,fontWeight:600,color:C.blue,textDecoration:"underline",textUnderlineOffset:3,display:"inline-flex",alignItems:"center",gap:6}}>Ver su perfil en LinkedIn <IcoExt/></a>
+              </article>
+            </V>
+          ))}
         </div>
       </div>
     </section>
@@ -1987,6 +2165,7 @@ function NosotrosPage(){
     <>
       <About/>
       <MisionVision/>
+      <Equipo/>
       <VenAConocernos/>
       <ComoTrabajamos/>
     </>
@@ -2067,7 +2246,7 @@ const META_DEF={
   servicios:["Servicios | Montajes Eléctricos Nebego","Instalaciones eléctricas, telecomunicaciones, energía solar fotovoltaica y puntos de recarga de vehículo eléctrico en Pamplona y Navarra."],
   proyectos:["Proyectos | Montajes Eléctricos Nebego","Obras de instalación eléctrica realizadas por Nebego en Navarra: edificios, reformas, naves, oficinas y equipamientos."],
   empleo:["Trabaja con nosotros | Montajes Eléctricos Nebego","¿Eres electricista? Envíanos tu currículum y forma parte del equipo de Nebego en Navarra."],
-  blog:["Novedades | Montajes Eléctricos Nebego","Consejos, ayudas y novedades sobre instalaciones eléctricas, recarga de vehículo eléctrico, autoconsumo y legalizaciones en Navarra."],
+  blog:["Blog y preguntas frecuentes | Montajes Eléctricos Nebego","Novedades de Nebego en redes y respuestas a las dudas más habituales sobre instalaciones eléctricas, recarga de vehículo eléctrico, presupuestos y legalizaciones en Navarra."],
   faqs:["Preguntas frecuentes | Montajes Eléctricos Nebego","Respuestas a las dudas más habituales sobre presupuestos, plazos, legalizaciones y mantenimiento de instalaciones eléctricas."],
   legal:["Aviso legal, privacidad y cookies | Montajes Eléctricos Nebego","Aviso legal, política de privacidad y política de cookies de Montajes Eléctricos Nebego, S.L."],
   "servicio-electricas":["Instalaciones eléctricas en Navarra | Nebego","Instalaciones eléctricas de baja, media y alta tensión para obra nueva, reforma e industria en Pamplona y Navarra, con su legalización."],
@@ -2159,18 +2338,18 @@ function ContactModal(){
 
 function NebegoWeb(){
   const route=useRoute();
-  const pages={inicio:HomePage,nosotros:NosotrosPage,servicios:ServiciosPage,proyectos:ProyectosPage,empleo:EmpleoPage,blog:BlogPage,faqs:FAQsPage,legal:LegalPage,"servicio-electricas":ElectricasPage,"servicio-telecom":TelecomPage,"servicio-renovables":RenovablesPage,"servicio-recarga":RecargaPage};
+  const pages={inicio:HomePage,nosotros:NosotrosPage,servicios:ServiciosPage,proyectos:ProyectosPage,empleo:EmpleoPage,blog:BlogPage,legal:LegalPage,"servicio-electricas":ElectricasPage,"servicio-telecom":TelecomPage,"servicio-renovables":RenovablesPage,"servicio-recarga":RecargaPage};
   const isArt=route.indexOf("novedades/")===0;
   const Page=pages[route]||HomePage;
   return (
     <>
       <style>{FONTS}</style>
       <style>{GLOBAL}</style>
-      <Nav route={isArt?"blog":route} light={route==="blog"||route==="servicios"||route==="proyectos"||route==="faqs"||route==="nosotros"}/>
+      <Nav route={isArt?"blog":route} light={route==="blog"||route==="servicios"||route==="proyectos"||route==="nosotros"}/>
       {isArt ? <ArticlePage slug={route.slice(10)}/> : <Page/>}
       <Footer/>
       <ContactModal/>
-      <WhatsAppFloat/>
+      <BarraContacto/>
     </>
   );
 }

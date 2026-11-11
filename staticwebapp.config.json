@@ -2,11 +2,140 @@
   "trailingSlash": "auto",
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/assets/*", "*.{png,jpg,jpeg,gif,ico,svg,webp,js,css,xml,txt,json}"]
+    "exclude": [
+      "/assets/*",
+      "*.{png,jpg,jpeg,gif,ico,svg,webp,js,css,xml,txt,json}"
+    ]
   },
   "routes": [
-    { "route": "/_fuente/*", "statusCode": 404 },
-    { "route": "/.github/*", "statusCode": 404 }
+    {
+      "route": "/_fuente/*",
+      "statusCode": 404
+    },
+    {
+      "route": "/.github/*",
+      "statusCode": 404
+    },
+    {
+      "route": "/novedades/puntos-recarga-vehiculo-electrico/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/puntos-recarga-vehiculo-electrico",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/eficiencia-energetica-edificios/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/eficiencia-energetica-edificios",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/instalaciones-electricas-obra-nueva/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/instalaciones-electricas-obra-nueva",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/revisar-instalacion-electrica/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/revisar-instalacion-electrica",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/legalizacion-instalaciones-electricas/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/legalizacion-instalaciones-electricas",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/seguridad-electrica-empresas-comunidades/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/seguridad-electrica-empresas-comunidades",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/proyecto-estadio-larrabide/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/proyecto-estadio-larrabide",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/proyecto-aulario-upna/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/proyecto-aulario-upna",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/proyecto-nave-districalor-txantrea/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/proyecto-nave-districalor-txantrea",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/buscamos-ingeniero-electrico/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/buscamos-ingeniero-electrico",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/nebego-estrena-redes-sociales/*",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/novedades/nebego-estrena-redes-sociales",
+      "redirect": "/blog/",
+      "statusCode": 301
+    },
+    {
+      "route": "/faqs/*",
+      "redirect": "/blog/#preguntas",
+      "statusCode": 301
+    },
+    {
+      "route": "/faqs",
+      "redirect": "/blog/#preguntas",
+      "statusCode": 301
+    }
   ],
   "globalHeaders": {
     "X-Content-Type-Options": "nosniff",
